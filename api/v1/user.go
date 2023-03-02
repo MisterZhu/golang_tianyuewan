@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"fmt"
+
 	"gindiary/model"
 	"gindiary/response"
 	"gindiary/util/errmsg"
@@ -54,9 +56,15 @@ func Register(c *gin.Context) {
 登录
 */
 func Login(c *gin.Context) {
+
+	ph := c.PostForm("telephone")
+	fmt.Printf("postform:%s\n", ph)
+
 	// 使用map获取请求参数
 	var user = model.User{}
-	c.Bind(&user)
+	c.ShouldBindJSON(&user)
+	fmt.Printf("ShouldBindJSON:%s\n", user.Telephone)
+
 	if len(user.Telephone) != 11 {
 		response.Fail(c, "手机号必须为11位", nil)
 
@@ -82,7 +90,7 @@ func EditUser(c *gin.Context) {
 
 	// 使用map获取请求参数 接受参数方法与传参方式有很大关系
 	var user = model.User{}
-	c.Bind(&user)
+	c.ShouldBindJSON(&user)
 
 	code := model.CheckName(user.Username)
 	if code == errmsg.SUCCSE {

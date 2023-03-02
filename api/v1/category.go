@@ -61,7 +61,7 @@ func EditCategory(c *gin.Context) {
 
 	// 使用map获取请求参数 接受参数方法与传参方式有很大关系
 	var cate = model.Category{}
-	c.Bind(&cate)
+	c.ShouldBindJSON(&cate)
 
 	code := model.CheckCategory(cate.Name)
 	if code == errmsg.SUCCSE {
