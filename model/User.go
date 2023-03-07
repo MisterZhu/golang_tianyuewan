@@ -70,12 +70,12 @@ func (u *User) BeforeSave() {
 }
 
 // 校验用户是否存在，密码是否正确
-func CheckUser(fromUser *User) (code int) {
+func CheckUser(telephone string, password string) (code int, reUser User) {
 	var user User
-	db.Where("telephone = ?", fromUser.Telephone).First(&user)
+	db.Where("telephone = ?", telephone).First(&user)
 
 	if user.ID <= 0 {
-		return errmsg.ERR_USER_NOT_EXIST //用户不存在
+		return errmsg.ERR_USER_NOT_EXIST, user //用户不存在
 	} else {
 		// // 判断加密密码是否正确
 		// if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(fromUser.Password)); err != nil {
@@ -85,10 +85,10 @@ func CheckUser(fromUser *User) (code int) {
 		// 	return errmsg.SUCCSE
 		// }
 		// 判断密码是否正确
-		if user.Password == fromUser.Password {
-			return errmsg.SUCCSE
+		if user.Password == password {
+			return errmsg.SUCCSE, user
 		} else {
-			return errmsg.ERR_PASSWORD_WRONG
+			return errmsg.ERR_PASSWORD_WRONG, user
 		}
 	}
 }
