@@ -4,6 +4,8 @@ import (
 	"gindiary/model"
 	"gindiary/response"
 	"gindiary/util/errmsg"
+	"log"
+	"strings"
 
 	"net/http"
 	"strconv"
@@ -15,8 +17,25 @@ import (
 添加分类
 */
 func AddCategory(c *gin.Context) {
-	var data model.Category
-	_ = c.ShouldBindJSON(&data)
+
+	name := c.PostForm("title")
+	content := c.PostForm("content")
+	imageUrlsAry := c.PostFormArray("imageUrls")
+	image_urls := strings.Join(imageUrlsAry, ",")
+
+	data := model.Category{
+		Name:      name,
+		Content:   content,
+		ImageUrls: image_urls,
+	}
+	log.Printf("imageUrlsAry = %v", imageUrlsAry)
+	log.Printf("image_urls = %v", image_urls)
+
+	log.Printf("data = %v", data)
+	log.Printf("c = %v", c)
+
+	// var data model.Category
+	// _ = c.ShouldBindJSON(&data)
 	code := model.CheckCategory(data.Name)
 	if code == errmsg.SUCCSE {
 		model.CreateCategory(&data)
@@ -45,6 +64,21 @@ func GetCategory(c *gin.Context) {
 
 	data := model.GetCates(size, page)
 	code := errmsg.SUCCSE
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"data": data,
+		"msg":  errmsg.GetErrMsg(code),
+	})
+	//response.Response(c, http.StatusOK, 200, errmsg.GetErrMsg(code), data)
+
+}
+
+// 查询分类详情
+func GetCategoryDet(c *gin.Context) {
+	id, _ := strconv.Atoi(c.PostForm("id"))
+	// id := c.PostForm("id")
+
+	data, code := model.CheckCategoryDet(id)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"data": data,

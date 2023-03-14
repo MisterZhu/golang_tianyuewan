@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -11,10 +13,15 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		//获取authorization header
 		tokenString := ctx.GetHeader("Authorization")
-
+		log.Printf("tokenStringr: %v", tokenString)
+		if len(ctx.Request.Header) > 0 {
+			for k, v := range ctx.Request.Header {
+				fmt.Printf("%s=%s\n", k, v[0])
+			}
+		}
 		//validate token formate
 		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer ") {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 400, "msg": "权限不足"})
+			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足,token为空"})
 			ctx.Abort()
 			return
 		}
@@ -22,7 +29,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		token, claims, err := ParseToken(tokenString)
 		if err != nil || !token.Valid {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 400, "msg": "权限不足"})
+			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足,token解析失败"})
 			ctx.Abort()
 			return
 
@@ -34,7 +41,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		db.Where("id = ?", userId).First(&user)
 		if user.ID == 0 {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 400, "msg": "权限不足"})
+			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足,token验证失败"})
 			ctx.Abort()
 			return
 		}

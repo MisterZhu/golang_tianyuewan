@@ -7,8 +7,24 @@ import (
 )
 
 type Category struct {
-	ID   uint   `gorm:"primary_key;auto_increment" json:"id"`
-	Name string `gorm:"type:varchar(20);not null " json:"name"`
+	ID        uint   `gorm:"primary_key;auto_increment" json:"id"`
+	Name      string `gorm:"type:varchar(100);not null " json:"name"`
+	Content   string `gorm:"type:text;not null" json:"content"`
+	ImageUrls string `gorm:"type:text;not null" json:"image_urls"`
+}
+
+// 查询分类详情信息
+func CheckCategoryDet(id int) (date *Category, code int) {
+	/*
+		var user User
+		db.Where("id = ?", userId).First(&user)
+	*/
+	var cate Category
+	db.Where("id = ?", id).First(&cate)
+	if cate.ID > 0 {
+		return &cate, errmsg.SUCCSE //分类已存在
+	}
+	return &cate, errmsg.ERR_CATE_NONE
 }
 
 // 查询分类是否存在

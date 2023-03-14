@@ -95,7 +95,9 @@ func Login(c *gin.Context) {
 	}
 }
 
-// 获取用户信息
+/*
+获取用户信息
+*/
 func Info(c *gin.Context) {
 	user, _ := c.Get("user")
 	c.JSON(http.StatusOK, gin.H{
@@ -105,7 +107,21 @@ func Info(c *gin.Context) {
 	})
 }
 
-// 编辑用户
+/*
+退出登录
+*/
+func Logout(c *gin.Context) {
+	user, _ := c.Get("user")
+	c.JSON(http.StatusOK, gin.H{
+		"code": 200,
+		"data": user,
+		"msg":  errmsg.GetErrMsg(200),
+	})
+}
+
+/*
+编辑用户
+*/
 func EditUser(c *gin.Context) {
 	// username := c.PostForm("username")
 	// userId, _ := strconv.Atoi(c.PostForm("id"))
@@ -127,7 +143,9 @@ func EditUser(c *gin.Context) {
 	}
 }
 
-// 删除用户
+/*
+删除用户
+*/
 func DeleteUser(c *gin.Context) {
 	// id, _ := strconv.Atoi(c.PostForm("id"))
 	userId, _ := strconv.Atoi(c.PostForm("id"))

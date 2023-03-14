@@ -18,6 +18,10 @@ const (
 
 	//code 2000 分类模块错误
 	ERR_CATE_USED = 2001
+	ERR_CATE_NONE = 2002
+	//code 2000 文章模块错误
+	ERR_ART_USED = 3001
+	ERR_ART_NONE = 3002
 )
 
 var codemsg = map[int]string{
@@ -34,6 +38,10 @@ var codemsg = map[int]string{
 
 	// ERR_GENERAL: 			"自定义参数",
 	ERR_CATE_USED: "分类已存在",
+	ERR_CATE_NONE: "分类不存在",
+	//code 2000 文章模块错误
+	ERR_ART_USED: "文章已存在",
+	ERR_ART_NONE: "文章不存在",
 }
 
 func GetErrMsg(code int) string {
