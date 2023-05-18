@@ -19,9 +19,12 @@ const (
 	//code 2000 分类模块错误
 	ERR_CATE_USED = 2001
 	ERR_CATE_NONE = 2002
-	//code 2000 文章模块错误
+	//code 3000 文章模块错误
 	ERR_ART_USED = 3001
 	ERR_ART_NONE = 3002
+	//code 4000 解析错误
+	ERR_analys_fail       = 4001
+	ERR_analys_undercount = 4002
 )
 
 var codemsg = map[int]string{
@@ -40,8 +43,10 @@ var codemsg = map[int]string{
 	ERR_CATE_USED: "分类已存在",
 	ERR_CATE_NONE: "分类不存在",
 	//code 2000 文章模块错误
-	ERR_ART_USED: "文章已存在",
-	ERR_ART_NONE: "文章不存在",
+	ERR_ART_USED:          "文章已存在",
+	ERR_ART_NONE:          "文章不存在",
+	ERR_analys_fail:       "解析失败",
+	ERR_analys_undercount: "您的免费解析次数已用完",
 }
 
 func GetErrMsg(code int) string {

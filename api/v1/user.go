@@ -88,7 +88,6 @@ func Login(c *gin.Context) {
 		return
 	}
 	if code == errmsg.SUCCSE {
-		//用户存在
 		response.Success(c, "登录成功", gin.H{"token": token})
 	} else {
 		response.Fail(c, errmsg.GetErrMsg(code), nil)

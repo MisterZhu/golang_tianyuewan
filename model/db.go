@@ -35,6 +35,6 @@ func InitDb() {
 	if err != nil {
 		panic("failed to connect database, err: " + err.Error())
 	}
-	db.AutoMigrate(&User{}, &Article{}, &Category{})
+	db.AutoMigrate(&User{}, &Article{}, &Category{}, &XcxUser{}, &XcxAnalyModel{})
 
 }

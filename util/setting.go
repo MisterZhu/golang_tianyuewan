@@ -18,6 +18,13 @@ var (
 	DBCharset  string
 	DBLoc      string
 	DBTimeout  string
+
+	AppID        string
+	AppSecret    string
+	EveryDayFree int
+
+	EEapiUToken string
+	EEapiUId    string
 )
 
 func init() {
@@ -27,7 +34,7 @@ func init() {
 	}
 	LoadServer(file)
 	LoadData(file)
-
+	LoadXCX(file)
 }
 
 func LoadServer(file *ini.File) {
@@ -44,5 +51,15 @@ func LoadData(file *ini.File) {
 	DBCharset = file.Section("database").Key("DBCharset").MustString("utf8mb4")
 	DBLoc = file.Section("database").Key("DBLoc").MustString("Local")
 	DBTimeout = file.Section("database").Key("DBTimeout").MustString("10s")
+
+}
+
+func LoadXCX(file *ini.File) {
+	AppID = file.Section("xcx").Key("AppID").MustString("wx7e81fb1d9a169a9c")
+	AppSecret = file.Section("xcx").Key("AppSecret").MustString("053799a0aa4aa91e7d9a7dad38b6d737")
+	EveryDayFree = file.Section("xcx").Key("EveryDayFree").MustInt(3)
+
+	EEapiUToken = file.Section("xcx").Key("EEapiUToken").MustString("")
+	EEapiUId = file.Section("xcx").Key("EEapiUId").MustString("")
 
 }
