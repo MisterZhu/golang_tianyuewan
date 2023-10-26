@@ -56,6 +56,18 @@ func InitRouter() {
 	}
 	xcx_router := r.Group("api/v2")
 	{
+		// //小程序登录注册
+		// xcx_router.POST("/user/login", v2.XcxUserLogin)
+
+		// xcx_router.POST("/user/free_analysis", v2.XcxFreeAnalysisURL)
+
+		// //token校验 --  以下接口都需要校验token，如果不想校验，请写在上边
+		// xcx_router.Use(xcxMiddleware)
+		// // xcx_router.POST("/user/analysis", v2.XcxAnalysisURL)
+		// xcx_router.POST("/user/analysis", v2.XcxOneSelfFreeAnalysisURL)
+
+		// xcx_router.POST("/user/analysisRecord", v2.XcxGetAnalysis)
+		// xcx_router.POST("/user/signIn", v2.XcxGetSignIn)
 		//小程序登录注册
 		xcx_router.POST("/user/login", v2.XcxUserLogin)
 
@@ -68,7 +80,6 @@ func InitRouter() {
 
 		xcx_router.POST("/user/analysisRecord", v2.XcxGetAnalysis)
 		xcx_router.POST("/user/signIn", v2.XcxGetSignIn)
-
 	}
 	r.Run(util.HttpPort)
 
