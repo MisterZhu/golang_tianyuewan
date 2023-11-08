@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"time"
 
 	"gindiary/model"
 	"gindiary/response"
@@ -58,22 +57,6 @@ func TywUserLogin(c *gin.Context) {
 			return
 		}
 		if code == errmsg.SUCCSE {
-			now := time.Now()
-			samedate := isSameDay(now, reUser.UpdatedAt)
-			if !samedate {
-				log.Printf("不是同一天")
-
-				if reUser.QueryCount < 3 {
-					reUser.QueryCount = 3
-				}
-				signSamedate := isSameDay(now, reUser.SiginTime)
-				if !signSamedate {
-					reUser.SiginCount = 0
-					reUser.SiginReward = 2
-				}
-
-				model.EditXcxUserQueryCount(&reUser)
-			}
 			// response.Success(c, "登录成功", gin.H{"token": token})
 			c.JSON(http.StatusOK, gin.H{
 				"code":  200,
@@ -91,16 +74,12 @@ func TywUserLogin(c *gin.Context) {
 		// 生成短UUID
 		id := ksuid.New().String()[:8]
 		fmt.Println(id)
-		newUser := model.XcxUser{
-			Username:    "微信用户",
-			OpenId:      wxRes.OpenId,
-			QueryCount:  3,
-			UserId:      id,
-			SiginCount:  0,
-			SiginReward: 2,
-			InviterID:   InviterID,
+		newUser := model.TywUser{
+			Username: "微信用户",
+			OpenId:   wxRes.OpenId,
+			UserId:   id,
 		}
-		model.CreateXcxUser(&newUser)
+		model.TywCreateXcxUser(&newUser)
 		token, err := model.ReleaseXcxToken(reUser)
 		if err != nil {
 			response.Response(c, http.StatusUnprocessableEntity, 500, "系统异常", nil)
@@ -132,30 +111,6 @@ func TywUserLogin(c *gin.Context) {
 }
 
 /*
-编辑用户
-*/
-func TywEditUser(c *gin.Context) {
-	// username := c.PostForm("username")
-	// userId, _ := strconv.Atoi(c.PostForm("id"))
-
-	// 使用map获取请求参数 接受参数方法与传参方式有很大关系
-	var user = model.User{}
-	c.ShouldBindJSON(&user)
-
-	code := model.CheckName(user.Username)
-	if code == errmsg.SUCCSE {
-		code2 := model.EditUser(&user)
-		if code2 == errmsg.SUCCSE {
-			response.Success(c, "修改成功", nil)
-		} else {
-			response.Fail(c, "保存失败", nil)
-		}
-	} else {
-		response.Fail(c, errmsg.GetErrMsg(code), nil)
-	}
-}
-
-/*
 删除用户
 */
 func TywDeleteUser(c *gin.Context) {
@@ -167,59 +122,27 @@ func TywDeleteUser(c *gin.Context) {
 		"code": code,
 		"msg":  errmsg.GetErrMsg(code),
 	})
-
 }
 
-// 用户签到
+// 用户审核
 func TywGetSignIn(c *gin.Context) {
-	sigin_count, _ := strconv.Atoi(c.PostForm("sigin_count"))
-	sigin_reward, _ := strconv.Atoi(c.PostForm("sigin_reward"))
-	fmt.Printf("\n sigin_count :%d\n", sigin_count)
-	fmt.Printf("\n sigin_reward :%d\n", sigin_reward)
+	state, _ := strconv.Atoi(c.PostForm("state"))
+	// default_community, _ := strconv.Atoi(c.PostForm("default_community"))
+	// default_room, _ := strconv.Atoi(c.PostForm("default_room"))
+	default_community := c.PostForm("default_community")
+	default_room := c.PostForm("default_room")
 
-	switch {
-	case sigin_count == 0:
-		sigin_reward = 2
-		sigin_count = 1
+	fmt.Printf("\n state :%d\n", state)
+	fmt.Printf("\n default_community :%s\n", default_community)
+	fmt.Printf("\n default_room :%s\n", default_room)
 
-	case sigin_count == 1:
-		sigin_reward = 2
-		sigin_count = 2
-
-	case sigin_count == 2:
-		sigin_reward = 3
-		sigin_count = 3
-
-	case sigin_count == 3:
-		sigin_reward = 3
-		sigin_count = 4
-
-	case sigin_count == 4:
-		sigin_reward = 5
-		sigin_count = 5
-
-	case sigin_count == 5:
-		sigin_reward = 5
-		sigin_count = 6
-
-	case sigin_count == 6:
-		sigin_reward = 7
-		sigin_count = 7
-
-	case sigin_count == 7:
-		sigin_reward = 2
-		sigin_count = 1
-
-	}
-	now := time.Now()
 	// 获取上下文中小程序用户信息
-	xcxUser := c.Value("user").(model.XcxUser)
-	xcxUser.SiginCount = sigin_count
-	xcxUser.SiginReward = sigin_reward
-	xcxUser.SiginTime = now
-	xcxUser.QueryCount = xcxUser.QueryCount + sigin_reward
+	xcxUser := c.Value("user").(model.TywUser)
+	xcxUser.State = state
+	xcxUser.DefaultCommunity = default_community
+	xcxUser.DefaultRoom = default_room
 
-	model.EditXcxUserSignIn(&xcxUser)
+	model.TywEditXcxUserSignIn(&xcxUser)
 
 	code := errmsg.SUCCSE
 	c.JSON(http.StatusOK, gin.H{

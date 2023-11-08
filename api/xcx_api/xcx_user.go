@@ -136,30 +136,6 @@ func isSameDay(t1, t2 time.Time) bool {
 }
 
 /*
-编辑用户
-*/
-func EditUser(c *gin.Context) {
-	// username := c.PostForm("username")
-	// userId, _ := strconv.Atoi(c.PostForm("id"))
-
-	// 使用map获取请求参数 接受参数方法与传参方式有很大关系
-	var user = model.User{}
-	c.ShouldBindJSON(&user)
-
-	code := model.CheckName(user.Username)
-	if code == errmsg.SUCCSE {
-		code2 := model.EditUser(&user)
-		if code2 == errmsg.SUCCSE {
-			response.Success(c, "修改成功", nil)
-		} else {
-			response.Fail(c, "保存失败", nil)
-		}
-	} else {
-		response.Fail(c, errmsg.GetErrMsg(code), nil)
-	}
-}
-
-/*
 删除用户
 */
 func DeleteUser(c *gin.Context) {

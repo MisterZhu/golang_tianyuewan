@@ -61,7 +61,7 @@ func GetCates(size int, page int) []Category {
 func EditCategory(id int, data *Category) int {
 	var cate Category
 	var maps = make(map[string]interface{})
-	maps["name"] = data.Name
+	maps["Name"] = data.Name
 	err := db.Model(&cate).Where("id = ?", id).Updates(maps).Error
 	if err != nil {
 		return errmsg.ERROR

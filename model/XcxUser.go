@@ -73,8 +73,8 @@ func EditXcxUserQueryCount(data *XcxUser) int {
 func EditXcxUserInvited(data *XcxUser) int {
 	var user XcxUser
 	var maps = make(map[string]interface{})
-	maps["query_count"] = data.QueryCount
-	maps["invited_users"] = data.InvitedUsers
+	maps["QueryCount"] = data.QueryCount
+	maps["InvitedUsers"] = data.InvitedUsers
 
 	err := db.Model(&user).Where("id = ?", data.ID).Updates(maps).Error
 	if err != nil {
@@ -87,9 +87,9 @@ func EditXcxUserInvited(data *XcxUser) int {
 func EditXcxUserSignIn(data *XcxUser) int {
 	var user XcxUser
 	var maps = make(map[string]interface{})
-	maps["sigin_count"] = data.SiginCount
-	maps["sigin_reward"] = data.SiginReward
-	maps["sigin_time"] = data.SiginTime
+	maps["SiginCount"] = data.SiginCount
+	maps["SiginReward"] = data.SiginReward
+	maps["SiginTime"] = data.SiginTime
 
 	err := db.Model(&user).Where("id = ?", data.ID).Updates(maps).Error
 	if err != nil {
