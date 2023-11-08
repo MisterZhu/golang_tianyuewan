@@ -8,17 +8,12 @@ import (
 
 type TywOwnerModel struct {
 	gorm.Model
-	OpenId        string `gorm:"type:varchar(1024);not null " json:"open_id"`
-	UserId        string `gorm:"type:varchar(200);not null " json:"user_id"`
-	OriginURL     string `gorm:"type:text;not null" json:"origin_url"`
-	Title         string `gorm:"type:text;not null" json:"title"`
-	Cover         string `gorm:"type:text;not null" json:"cover"`
-	DownloadImage string `gorm:"type:text;not null" json:"download_image"`
-	Video         string `gorm:"type:text;not null" json:"video"`
-	URL           string `gorm:"type:text;not null" json:"url"`
-	Down          string `gorm:"type:text;not null" json:"down"`
-	Images        string `gorm:"type:text;not null" json:"images"`
-	BigFile       bool   `gorm:"default:false" json:"big_file"`
+	Community string `gorm:"type:varchar(1024);not null " json:"community"`
+	Room      string `gorm:"type:varchar(200);not null " json:"room"`
+	State     int    `gorm:"type:int " json:"state"`
+	UserId    string `gorm:"type:text;not null" json:"user_id"`
+	Telephone string `gorm:"type:varchar(110);not null" json:"telephone"`
+	ImgUrl    string `gorm:"type:text;not null" json:"img_url"`
 }
 
 // 新增申请
@@ -31,12 +26,12 @@ func TywCreateOwner(data *TywOwnerModel) int {
 	return errmsg.SUCCSE
 }
 
-// 查询申请列表
-func TywGetOwners(size int, page int, userId string) []TywOwnerModel {
+// 查询所有申请列表
+func TywGetOwners(size int, page int) []TywOwnerModel {
 
 	var cate []TywOwnerModel
 	// err = db.Limit(size).Offset((page - 1) * size).Find(&cate).Error
-	err = db.Order("updated_at desc").Where("user_id = ?", userId).Limit(size).Offset((page - 1) * size).Find(&cate).Error
+	err = db.Order("updated_at desc").Limit(size).Offset((page - 1) * size).Find(&cate).Error
 
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil
@@ -44,15 +39,50 @@ func TywGetOwners(size int, page int, userId string) []TywOwnerModel {
 	return cate
 }
 
-// 编辑分类
-func TywEditOwner(id int, data *TywOwnerModel) int {
-	var cate TywOwnerModel
+// 查询分类列表
+//
+//	func GetCates(size int, page int) []Category {
+//		var cate []Category
+//		err = db.Limit(size).Offset((page - 1) * size).Find(&cate).Error
+//		if err != nil && err != gorm.ErrRecordNotFound {
+//			return nil
+//		}
+//		return cate
+//	}
+//
+// 审核申请
+// func TywEditOwner(id int, data *TywOwnerModel) int {
+// 	var cate TywOwnerModel
+// 	var maps = make(map[string]interface{})
+// 	maps["State"] = data.State
+// 	err := db.Model(&cate).Where("id = ?", id).Updates(maps).Error
+// 	if err != nil {
+// 		return errmsg.ERROR
+// 	}
+// 	return errmsg.SUCCSE
+
+// }
+// 编辑申请信息
+func TywEditOwnerState(id int, newState int) int {
+	var art TywOwnerModel
 	var maps = make(map[string]interface{})
-	maps["Title"] = data.Title
-	err := db.Model(&cate).Where("id = ?", id).Updates(maps).Error
+	maps["State"] = newState
+
+	err := db.Model(&art).Where("id = ?", id).Updates(maps).Error
+
 	if err != nil {
 		return errmsg.ERROR
 	}
 	return errmsg.SUCCSE
+}
 
+// 删除 申请
+func DeleteOwner(id int) int {
+	var cate TywOwnerModel
+	err = db.Where("id = ?", id).Delete(&cate).Error
+
+	if err != nil {
+		return errmsg.ERROR //
+	}
+	return errmsg.SUCCSE
 }
