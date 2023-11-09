@@ -1,6 +1,7 @@
 package xcxapi
 
 import (
+	"fmt"
 	"gindiary/model"
 	"gindiary/response"
 	"gindiary/util/errmsg"
@@ -43,6 +44,7 @@ func AddOwnerApply(c *gin.Context) {
 func GetOwnerApply(c *gin.Context) {
 	size, _ := strconv.Atoi(c.PostForm("size"))
 	page, _ := strconv.Atoi(c.PostForm("page"))
+	user_id := c.PostForm("user_id")
 
 	switch {
 	case size > 100:
@@ -54,8 +56,7 @@ func GetOwnerApply(c *gin.Context) {
 		page = 1
 	}
 
-	data := model.TywGetOwners(size, page)
-	code := errmsg.SUCCSE
+	data, code := model.TywGetOwners(size, page, user_id)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"data": data,
@@ -85,22 +86,41 @@ func EditApplyState(c *gin.Context) {
 	// username := c.PostForm("username")
 	ID, _ := strconv.Atoi(c.PostForm("id"))
 	state, _ := strconv.Atoi(c.PostForm("state"))
+	default_community := c.PostForm("default_community")
+	default_room := c.PostForm("default_room")
+	user_id := c.PostForm("user_id")
 
 	// 使用map获取请求参数 接受参数方法与传参方式有很大关系
 	// var cate = model.TywOwnerModel{}
 	// c.ShouldBindJSON(&cate)
-
 	code := model.TywEditOwnerState(ID, state)
-	response.Success(c, errmsg.GetErrMsg(code), nil)
+	if code == errmsg.SUCCSE {
+		user := model.TywUser{
+			State:            state,
+			DefaultCommunity: default_community,
+			DefaultRoom:      default_room,
+			UserId:           user_id,
+		}
+		code1 := model.TywEditXcxUserInfo(&user)
+		if code1 == errmsg.SUCCSE {
+			response.Success(c, errmsg.GetErrMsg(code), nil)
+		} else {
+			fmt.Println("审核失败，修改数据库个人状态失败")
+			response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
+		}
+	} else {
+		fmt.Println("审核失败，修改数据库申请信息失败")
+		response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
+	}
 
 }
 
 // 删除申请数据
 func DeleteOwner(c *gin.Context) {
-	// id, _ := strconv.Atoi(c.PostForm("id"))
-	userId, _ := strconv.Atoi(c.PostForm("id"))
+	// user_id := c.PostForm("user_id")
+	id, _ := strconv.Atoi(c.PostForm("id"))
 
-	code := model.DeleteOwner(userId)
+	code := model.DeleteOwner(id)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  errmsg.GetErrMsg(code),

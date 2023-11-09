@@ -44,14 +44,27 @@ func TywCreateXcxUser(data *TywUser) int {
 }
 
 // 编辑用户
-func TywEditXcxUserSignIn(data *TywUser) int {
-	var user XcxUser
+func TywEditXcxUserInfo(data *TywUser) int {
+	var user TywUser
 	var maps = make(map[string]interface{})
 	maps["State"] = data.State
 	maps["DefaultCommunity"] = data.DefaultCommunity
 	maps["DefaultRoom"] = data.DefaultRoom
 
-	err := db.Model(&user).Where("id = ?", data.ID).Updates(maps).Error
+	err := db.Model(&user).Where("user_id = ?", data.ID).Updates(maps).Error
+	if err != nil {
+		return errmsg.ERROR
+	}
+	return errmsg.SUCCSE
+}
+
+// 编辑用户昵称
+func TywEditXcxUserName(data *TywUser) int {
+	var user TywUser
+	var maps = make(map[string]interface{})
+	maps["Username"] = data.Username
+
+	err := db.Model(&user).Where("user_id = ?", data.ID).Updates(maps).Error
 	if err != nil {
 		return errmsg.ERROR
 	}
@@ -59,9 +72,9 @@ func TywEditXcxUserSignIn(data *TywUser) int {
 }
 
 // 删除用户
-func TywDeleteXcxUser(id int) int {
+func TywDeleteXcxUser(id string) int {
 	var user TywUser
-	err = db.Where("id = ?", id).Delete(&user).Error
+	err = db.Where("user_id = ?", id).Delete(&user).Error
 	if err != nil {
 		return errmsg.ERROR //
 	}

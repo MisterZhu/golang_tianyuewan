@@ -139,10 +139,10 @@ func isSameDay(t1, t2 time.Time) bool {
 删除用户
 */
 func DeleteUser(c *gin.Context) {
-	// id, _ := strconv.Atoi(c.PostForm("id"))
-	userId, _ := strconv.Atoi(c.PostForm("id"))
+	// user_id := c.PostForm("user_id")
+	id, _ := strconv.Atoi(c.PostForm("id"))
 
-	code := model.DeleteUser(userId)
+	code := model.DeleteUser(id)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  errmsg.GetErrMsg(code),

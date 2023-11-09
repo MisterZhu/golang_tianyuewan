@@ -3,13 +3,11 @@ package xcxapi
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-	"strings"
-
 	"gindiary/model"
 	"gindiary/response"
 	"gindiary/util"
 	"gindiary/util/errmsg"
+	"log"
 
 	"github.com/segmentio/ksuid"
 
@@ -25,7 +23,7 @@ import (
 func TywUserLogin(c *gin.Context) {
 
 	Code := c.PostForm("code")
-	InviterID := c.PostForm("inviter_id")
+	// InviterID := c.PostForm("inviter_id")
 
 	fmt.Printf("\nloginData :%s\n", Code)
 
@@ -84,29 +82,15 @@ func TywUserLogin(c *gin.Context) {
 		if err != nil {
 			response.Response(c, http.StatusUnprocessableEntity, 500, "系统异常", nil)
 			log.Printf("token generate error: %v", err)
-			return
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"code":  200,
+				"token": token,
+				"data":  newUser,
+				"msg":   errmsg.GetErrMsg(200),
+			})
 		}
-		nviterCode, inviterUser := model.CheckOpenid(InviterID)
-		if nviterCode == errmsg.SUCCSE {
-			InvitedAry := inviterUser.InvitedUsers
-			iscontains := strings.Contains(InvitedAry, InviterID)
-			if !iscontains {
-				if len(InvitedAry) == 0 {
-					InvitedAry = InviterID
-				} else {
-					InvitedAry = InvitedAry + "," + InviterID
-				}
-				inviterUser.InvitedUsers = InvitedAry
-				inviterUser.QueryCount += 10 * (len(InvitedAry) + 1)
-				model.EditXcxUserInvited(&inviterUser)
-			}
-		}
-		c.JSON(http.StatusOK, gin.H{
-			"code":  200,
-			"token": token,
-			"data":  newUser,
-			"msg":   errmsg.GetErrMsg(200),
-		})
+
 	}
 }
 
@@ -114,10 +98,10 @@ func TywUserLogin(c *gin.Context) {
 删除用户
 */
 func TywDeleteUser(c *gin.Context) {
-	// id, _ := strconv.Atoi(c.PostForm("id"))
-	userId, _ := strconv.Atoi(c.PostForm("id"))
+	// user_id := c.PostForm("user_id")
+	id, _ := strconv.Atoi(c.PostForm("id"))
 
-	code := model.DeleteUser(userId)
+	code := model.DeleteUser(id)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  errmsg.GetErrMsg(code),
@@ -131,23 +115,44 @@ func TywGetSignIn(c *gin.Context) {
 	// default_room, _ := strconv.Atoi(c.PostForm("default_room"))
 	default_community := c.PostForm("default_community")
 	default_room := c.PostForm("default_room")
+	user_id := c.PostForm("default_room")
 
+	fmt.Printf("\n user_id :%s\n", user_id)
 	fmt.Printf("\n state :%d\n", state)
 	fmt.Printf("\n default_community :%s\n", default_community)
 	fmt.Printf("\n default_room :%s\n", default_room)
 
 	// 获取上下文中小程序用户信息
-	xcxUser := c.Value("user").(model.TywUser)
-	xcxUser.State = state
-	xcxUser.DefaultCommunity = default_community
-	xcxUser.DefaultRoom = default_room
+	tywUser := c.Value("user").(model.TywUser)
+	tywUser.State = state
+	tywUser.DefaultCommunity = default_community
+	tywUser.DefaultRoom = default_room
+	tywUser.UserId = user_id
 
-	model.TywEditXcxUserSignIn(&xcxUser)
+	model.TywEditXcxUserInfo(&tywUser)
 
 	code := errmsg.SUCCSE
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
-		"data": xcxUser,
-		"msg":  "签到成功",
+		"data": tywUser,
+		"msg":  "审核通过",
+	})
+}
+
+// 用户修改昵称
+func TywChangeUserName(c *gin.Context) {
+	user_name := c.PostForm("user_name")
+	fmt.Printf("\n user_name :%s\n", user_name)
+	// 获取上下文中小程序用户信息
+	tywUser := c.Value("user").(model.TywUser)
+	tywUser.Username = user_name
+
+	model.TywEditXcxUserName(&tywUser)
+
+	code := errmsg.SUCCSE
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"data": tywUser,
+		"msg":  "修改成功",
 	})
 }

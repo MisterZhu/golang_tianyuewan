@@ -27,17 +27,35 @@ func TywCreateOwner(data *TywOwnerModel) int {
 }
 
 // 查询所有申请列表
-func TywGetOwners(size int, page int) []TywOwnerModel {
+func TywGetOwners(size, page int, userID string) ([]TywOwnerModel, int) {
+	var posts []TywOwnerModel
+	dbQuery := db.Order("created_at desc").Limit(size).Offset((page - 1) * size)
 
-	var cate []TywOwnerModel
-	// err = db.Limit(size).Offset((page - 1) * size).Find(&cate).Error
-	err = db.Order("updated_at desc").Limit(size).Offset((page - 1) * size).Find(&cate).Error
-
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil
+	// 根据 userID 进行过滤
+	if userID != "" {
+		dbQuery = dbQuery.Where("user_id = ?", userID)
 	}
-	return cate
+
+	err := dbQuery.Find(&posts).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, errmsg.ERROR
+	}
+
+	return posts, errmsg.SUCCSE
 }
+
+// 查询所有申请列表
+// func TywGetOwners(size int, page int) []TywOwnerModel {
+
+// 	var cate []TywOwnerModel
+// 	// err = db.Limit(size).Offset((page - 1) * size).Find(&cate).Error
+// 	err = db.Order("updated_at desc").Limit(size).Offset((page - 1) * size).Find(&cate).Error
+
+// 	if err != nil && err != gorm.ErrRecordNotFound {
+// 		return nil
+// 	}
+// 	return cate
+// }
 
 // 查询分类列表
 //
