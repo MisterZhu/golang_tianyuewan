@@ -118,7 +118,7 @@ func GetParkPosts(c *gin.Context) {
 }
 
 // 编辑帖子
-func EdiPostsState(c *gin.Context) {
+func EditPostsState(c *gin.Context) {
 	// username := c.PostForm("username")
 	ID, _ := strconv.Atoi(c.PostForm("id"))
 	state, _ := strconv.Atoi(c.PostForm("state"))

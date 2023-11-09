@@ -53,6 +53,47 @@ func InitRouter() {
 		router.POST("/article/catelist", v1.GetCateArts)
 		router.POST("/article/artlist", v1.GetArts)
 
+		//天悦湾后台管理 社区区管理接口
+		router.POST("/community/add", v2.AddCommunity)
+		router.POST("/community/get", v2.GetCommunity)
+		router.POST("/community/edit", v2.EdiCommunityState)
+		router.POST("/community/det", v2.DeleteCommunity)
+
+		//天悦湾后台管理 业主审核管理接口
+		router.POST("/apply_list/get", v2.GetOwnerApply)
+		router.POST("/apply_list/edit", v2.EditApplyState)
+		router.POST("/apply_list/det", v2.DeleteOwner)
+
+		//天悦湾后台管理 帖子管理接口
+		router.POST("/park_posts/get", v2.GetParkPosts)
+		router.POST("/park_posts/edit", v2.EditPostsState)
+		router.POST("/park_posts/det", v2.DeletePosts)
+
+	}
+	tyw_xcx_router := r.Group("api/v3")
+	{
+
+		//小程序登录注册
+		tyw_xcx_router.POST("/user/login", v2.TywUserLogin)
+		//token校验 --  以下接口都需要校验token，如果不想校验，请写在上边
+		//用户模块
+		tyw_xcx_router.Use(xcxMiddleware)
+		tyw_xcx_router.POST("/user/delete_user", v2.TywDeleteUser)
+		tyw_xcx_router.POST("/user/check_user", v2.TywCheckUser)
+		tyw_xcx_router.POST("/user/change_name", v2.TywChangeUserName)
+
+		//申请认证模块
+		tyw_xcx_router.POST("/user/owner_apply", v2.AddOwnerApply)
+		tyw_xcx_router.POST("/user/apply_list", v2.GetOwnerApply)
+		tyw_xcx_router.POST("/user/check_apply", v2.EditApplyState)
+		tyw_xcx_router.POST("/user/delete_apply", v2.DeleteOwner)
+
+		//帖子模块
+		tyw_xcx_router.POST("/user/add_park_posts", v2.AddParkPosts)
+		tyw_xcx_router.POST("/user/park_posts_list", v2.GetParkPosts)
+		tyw_xcx_router.POST("/user/edit_park_posts", v2.EditPostsState)
+		tyw_xcx_router.POST("/user/delete_park_posts", v2.DeletePosts)
+
 	}
 	xcx_router := r.Group("api/v2")
 	{

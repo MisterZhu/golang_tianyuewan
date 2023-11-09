@@ -23,8 +23,8 @@ func AddOwnerApply(c *gin.Context) {
 	//state := c.PostFormArray("state")
 	// state, _ := strconv.Atoi(c.PostForm("state"))
 	img_url := c.PostForm("img_url")
-
 	telephone := c.PostForm("telephone")
+	user_id := c.PostForm("user_id")
 
 	data := model.TywOwnerModel{
 		Community: community,
@@ -35,9 +35,25 @@ func AddOwnerApply(c *gin.Context) {
 	}
 	log.Printf("data = %v", data)
 	log.Printf("c = %v", c)
-	model.TywCreateOwner(&data)
-	response.Success(c, errmsg.GetErrMsg(errmsg.SUCCSE), nil)
-
+	code := model.TywCreateOwner(&data)
+	if code == errmsg.SUCCSE {
+		user := model.TywUser{
+			State:            1,
+			DefaultCommunity: community,
+			DefaultRoom:      room,
+			UserId:           user_id,
+		}
+		code1 := model.TywEditXcxUserInfo(&user)
+		if code1 == errmsg.SUCCSE {
+			response.Success(c, errmsg.GetErrMsg(code), nil)
+		} else {
+			fmt.Println("审核失败，修改数据库个人状态失败")
+			response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
+		}
+	} else {
+		fmt.Println("审核失败，修改数据库申请信息失败")
+		response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
+	}
 }
 
 // 查询业主申请

@@ -109,7 +109,7 @@ func TywDeleteUser(c *gin.Context) {
 }
 
 // 用户审核
-func TywGetSignIn(c *gin.Context) {
+func TywCheckUser(c *gin.Context) {
 	state, _ := strconv.Atoi(c.PostForm("state"))
 	// default_community, _ := strconv.Atoi(c.PostForm("default_community"))
 	// default_room, _ := strconv.Atoi(c.PostForm("default_room"))
