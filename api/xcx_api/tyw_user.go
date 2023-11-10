@@ -35,20 +35,19 @@ func TywUserLogin(c *gin.Context) {
 	// 成功后获取openId
 	wxRes := model.WXLoginRes{}
 	json.NewDecoder(res.Body).Decode(&wxRes)
+	wxRes.OpenId = "oRQ4I42mhyGI76AdXvgbJdQlzo_I"
 	fmt.Printf("wxRes.OpenId:%s\n", wxRes.OpenId)
 	if len(wxRes.OpenId) <= 0 {
 		response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
 		return
 	}
 
-	code, reUser := model.CheckOpenid(wxRes.OpenId)
-
-	log.Printf("reUserQueryCount: %v\n", reUser.QueryCount)
+	code, reUser := model.TywCheckOpenid(wxRes.OpenId)
 
 	// 用户已存在
 	if code == errmsg.SUCCSE {
 		fmt.Printf("\n用户已存在\n")
-		token, err := model.ReleaseXcxToken(reUser)
+		token, err := model.ReleaseTywToken(reUser)
 		if err != nil {
 			response.Response(c, http.StatusUnprocessableEntity, 500, "系统异常", nil)
 			log.Printf("token generate error: %v", err)
@@ -78,7 +77,7 @@ func TywUserLogin(c *gin.Context) {
 			UserId:   id,
 		}
 		model.TywCreateXcxUser(&newUser)
-		token, err := model.ReleaseXcxToken(reUser)
+		token, err := model.ReleaseTywToken(reUser)
 		if err != nil {
 			response.Response(c, http.StatusUnprocessableEntity, 500, "系统异常", nil)
 			log.Printf("token generate error: %v", err)

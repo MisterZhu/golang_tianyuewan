@@ -28,12 +28,51 @@ func CheckName(username string) (code int) {
 // 注册用户
 func CreateUser(data *User) int {
 	// data.BeforeSave()
+	/*
+			// 在 CreateUser 函数中调用
+		hashedPassword, err := EncryptPassword(data.Password)
+		if err != nil {
+		    // 处理错误
+		    return errmsg.ERROR
+		}
+		data.Password = hashedPassword
+
+		// 在 EditUser 函数中调用
+		if data.Password != "" {
+		    hashedPassword, err := EncryptPassword(data.Password)
+		    if err != nil {
+		        // 处理错误
+		        return errmsg.ERROR
+		    }
+		    data.Password = hashedPassword
+		}
+
+	*/
 	err := db.Create(&data).Error
 	if err != nil {
 		return errmsg.ERROR
 	}
 	return errmsg.SUCCSE
 }
+
+// 密码加密
+func EncryptPassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedPassword), nil
+}
+
+// // 密码加密
+// func (u *User) BeforeSave() {
+// 	hasedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+// 	if err == nil {
+// 		u.Password = string(hasedPassword)
+// 	} else {
+// 		u.Password = "555555"
+// 	}
+// }
 
 // 编辑用户
 func EditUser(data *User) int {
@@ -58,16 +97,6 @@ func DeleteUser(id int) int {
 		return errmsg.ERROR //
 	}
 	return errmsg.SUCCSE
-}
-
-// 密码加密
-func (u *User) BeforeSave() {
-	hasedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-	if err == nil {
-		u.Password = string(hasedPassword)
-	} else {
-		u.Password = "555555"
-	}
 }
 
 // 校验用户是否存在，密码是否正确

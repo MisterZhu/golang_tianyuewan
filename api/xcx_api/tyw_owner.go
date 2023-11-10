@@ -32,6 +32,7 @@ func AddOwnerApply(c *gin.Context) {
 		State:     0,
 		ImgUrl:    img_url,
 		Telephone: telephone,
+		UserId:    user_id,
 	}
 	log.Printf("data = %v", data)
 	log.Printf("c = %v", c)
@@ -105,6 +106,7 @@ func EditApplyState(c *gin.Context) {
 	default_community := c.PostForm("default_community")
 	default_room := c.PostForm("default_room")
 	user_id := c.PostForm("user_id")
+	telephone := c.PostForm("telephone")
 
 	// 使用map获取请求参数 接受参数方法与传参方式有很大关系
 	// var cate = model.TywOwnerModel{}
@@ -116,6 +118,7 @@ func EditApplyState(c *gin.Context) {
 			DefaultCommunity: default_community,
 			DefaultRoom:      default_room,
 			UserId:           user_id,
+			Telephone:        telephone,
 		}
 		code1 := model.TywEditXcxUserInfo(&user)
 		if code1 == errmsg.SUCCSE {

@@ -53,6 +53,26 @@ func ReleaseXcxToken(user XcxUser) (string, error) {
 
 }
 
+// 生成天悦湾小程序token
+func ReleaseTywToken(user TywUser) (string, error) {
+	claims := &Claims{
+		UserId: user.ID,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			Issuer:    "zlx007.com.godiarypro",
+			Subject:   "user token",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		return "", err
+	}
+	return tokenString, nil
+
+}
+
 // 解析token
 func ParseToken(tokenString string) (*jwt.Token, *Claims, error) {
 	claims := &Claims{}

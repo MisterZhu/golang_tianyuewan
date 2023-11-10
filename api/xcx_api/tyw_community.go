@@ -27,6 +27,8 @@ func AddCommunity(c *gin.Context) {
 
 	// 可以在这里对 posts 进行一些其他处理，然后插入数据库等操作
 	log.Printf("posts = %+v", posts)
+	model.TywCreateCommunity(&posts)
+
 	response.Success(c, errmsg.GetErrMsg(errmsg.SUCCSE), nil)
 }
 

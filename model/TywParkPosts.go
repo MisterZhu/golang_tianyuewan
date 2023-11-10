@@ -17,6 +17,7 @@ type TywParkPostsModel struct {
 	WeiXin        string `gorm:"type:varchar(110);not null" json:"wei_xin"`
 	Title         string `gorm:"type:text;not null" json:"title"`
 	ImgUrl        string `gorm:"type:text;not null" json:"img_url"`
+	AnnualRent    string `gorm:"type:text;not null" json:"annual_rent"`
 }
 
 // 新增帖子

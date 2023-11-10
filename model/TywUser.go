@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"gindiary/util/errmsg"
 	"time"
 )
@@ -50,11 +51,17 @@ func TywEditXcxUserInfo(data *TywUser) int {
 	maps["State"] = data.State
 	maps["DefaultCommunity"] = data.DefaultCommunity
 	maps["DefaultRoom"] = data.DefaultRoom
+	maps["Telephone"] = data.Telephone
+	fmt.Println("编辑用户")
 
-	err := db.Model(&user).Where("user_id = ?", data.ID).Updates(maps).Error
+	err := db.Model(&user).Where("user_id = ?", data.UserId).Updates(maps).Error
 	if err != nil {
+		fmt.Println("编辑用户失败")
+
 		return errmsg.ERROR
 	}
+	fmt.Println("编辑用户成功")
+
 	return errmsg.SUCCSE
 }
 
@@ -64,7 +71,7 @@ func TywEditXcxUserName(data *TywUser) int {
 	var maps = make(map[string]interface{})
 	maps["Username"] = data.Username
 
-	err := db.Model(&user).Where("user_id = ?", data.ID).Updates(maps).Error
+	err := db.Model(&user).Where("user_id = ?", data.UserId).Updates(maps).Error
 	if err != nil {
 		return errmsg.ERROR
 	}

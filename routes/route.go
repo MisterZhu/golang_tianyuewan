@@ -22,6 +22,8 @@ func InitRouter() {
 	// 定义需要进行 token 校验的中间件
 	authMiddleware := model.AuthMiddleware()
 	xcxMiddleware := model.XcxAuthMiddleware()
+	tywMiddleware := model.TywAuthMiddleware()
+
 	router := r.Group("api/v1")
 	{
 		//用户模块路由接口
@@ -77,10 +79,14 @@ func InitRouter() {
 		tyw_xcx_router.POST("/user/login", v2.TywUserLogin)
 		//token校验 --  以下接口都需要校验token，如果不想校验，请写在上边
 		//用户模块
-		tyw_xcx_router.Use(xcxMiddleware)
+		tyw_xcx_router.Use(tywMiddleware)
 		tyw_xcx_router.POST("/user/delete_user", v2.TywDeleteUser)
 		tyw_xcx_router.POST("/user/check_user", v2.TywCheckUser)
 		tyw_xcx_router.POST("/user/change_name", v2.TywChangeUserName)
+
+		//七牛模块路由接口
+		tyw_xcx_router.GET("/qiniu/token", common.GetQiNiuUpToken)
+		tyw_xcx_router.POST("/qiniu/remove_file", common.DeleteQiNiuFile)
 
 		//申请认证模块
 		tyw_xcx_router.POST("/user/owner_apply", v2.AddOwnerApply)
@@ -94,6 +100,11 @@ func InitRouter() {
 		tyw_xcx_router.POST("/user/edit_park_posts", v2.EditPostsState)
 		tyw_xcx_router.POST("/user/delete_park_posts", v2.DeletePosts)
 
+		//天悦湾后台管理 社区区管理接口
+		tyw_xcx_router.POST("/community/add", v2.AddCommunity)
+		tyw_xcx_router.POST("/community/get", v2.GetCommunity)
+		tyw_xcx_router.POST("/community/edit", v2.EdiCommunityState)
+		tyw_xcx_router.POST("/community/det", v2.DeleteCommunity)
 	}
 	xcx_router := r.Group("api/v2")
 	{
