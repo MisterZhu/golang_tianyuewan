@@ -44,6 +44,17 @@ func TywGetOwners(size, page int, userID string) ([]TywOwnerModel, int) {
 	return posts, errmsg.SUCCSE
 }
 
+// todo 查询申请详情
+func GetOwnersInfo(id int) (TywOwnerModel, int) {
+	var art TywOwnerModel
+	err := db.Where("id = ?", id).First(&art).Error
+	if err != nil {
+		return art, errmsg.ERR_ART_NONE
+	}
+	return art, errmsg.SUCCSE
+
+}
+
 // 查询所有申请列表
 // func TywGetOwners(size int, page int) []TywOwnerModel {
 

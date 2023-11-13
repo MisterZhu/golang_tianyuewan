@@ -103,28 +103,40 @@ func EditApplyState(c *gin.Context) {
 	// username := c.PostForm("username")
 	ID, _ := strconv.Atoi(c.PostForm("id"))
 	state, _ := strconv.Atoi(c.PostForm("state"))
-	default_community := c.PostForm("default_community")
-	default_room := c.PostForm("default_room")
-	user_id := c.PostForm("user_id")
-	telephone := c.PostForm("telephone")
+	log.Printf("----------------ID = %v", ID)
+	log.Printf("----------------state = %v", state)
 
-	// 使用map获取请求参数 接受参数方法与传参方式有很大关系
-	// var cate = model.TywOwnerModel{}
-	// c.ShouldBindJSON(&cate)
-	code := model.TywEditOwnerState(ID, state)
+	info, code := model.GetOwnersInfo(ID)
 	if code == errmsg.SUCCSE {
-		user := model.TywUser{
-			State:            state,
-			DefaultCommunity: default_community,
-			DefaultRoom:      default_room,
-			UserId:           user_id,
-			Telephone:        telephone,
-		}
-		code1 := model.TywEditXcxUserInfo(&user)
-		if code1 == errmsg.SUCCSE {
-			response.Success(c, errmsg.GetErrMsg(code), nil)
+		info.State = state
+		// default_community := c.PostForm("default_community")
+		// default_room := c.PostForm("default_room")
+		// user_id := c.PostForm("user_id")
+		// telephone := c.PostForm("telephone")
+
+		// 使用map获取请求参数 接受参数方法与传参方式有很大关系
+		// var cate = model.TywOwnerModel{}
+		// c.ShouldBindJSON(&cate)
+		log.Printf("----------------info.State = %v", info.State)
+
+		code := model.TywEditOwnerState(ID, state)
+		if code == errmsg.SUCCSE {
+			user := model.TywUser{
+				State:            state,
+				DefaultCommunity: info.Community,
+				DefaultRoom:      info.Room,
+				UserId:           info.UserId,
+				Telephone:        info.Telephone,
+			}
+			code1 := model.TywEditXcxUserInfo(&user)
+			if code1 == errmsg.SUCCSE {
+				response.Success(c, errmsg.GetErrMsg(code), nil)
+			} else {
+				fmt.Println("审核失败，修改数据库个人状态失败")
+				response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
+			}
 		} else {
-			fmt.Println("审核失败，修改数据库个人状态失败")
+			fmt.Println("审核失败，修改数据库申请信息失败")
 			response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
 		}
 	} else {
