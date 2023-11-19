@@ -8,7 +8,6 @@ import (
 	"log"
 
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,31 +17,27 @@ import (
 */
 func AddOwnerApply(c *gin.Context) {
 
-	community := c.PostForm("community")
-	room := c.PostForm("room")
-	//state := c.PostFormArray("state")
-	// state, _ := strconv.Atoi(c.PostForm("state"))
-	img_url := c.PostForm("img_url")
-	telephone := c.PostForm("telephone")
-	user_id := c.PostForm("user_id")
-
-	data := model.TywOwnerModel{
-		Community: community,
-		Room:      room,
-		State:     0,
-		ImgUrl:    img_url,
-		Telephone: telephone,
-		UserId:    user_id,
+	// community := c.PostForm("community")
+	// room := c.PostForm("room")
+	// img_url := c.PostForm("img_url")
+	// telephone := c.PostForm("telephone")
+	// user_id := c.PostForm("user_id")
+	var data model.TywOwnerModel
+	if err := c.ShouldBindJSON(&data); err != nil {
+		// 处理参数绑定错误
+		log.Printf("Error binding request data: %v", err)
+		response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
+		return
 	}
-	log.Printf("data = %v", data)
-	log.Printf("c = %v", c)
+	data.State = 0
+
 	code := model.TywCreateOwner(&data)
 	if code == errmsg.SUCCSE {
 		user := model.TywUser{
 			State:            1,
-			DefaultCommunity: community,
-			DefaultRoom:      room,
-			UserId:           user_id,
+			DefaultCommunity: data.Community,
+			DefaultRoom:      data.Room,
+			UserId:           data.UserId,
 		}
 		code1 := model.TywEditXcxUserInfo(&user)
 		if code1 == errmsg.SUCCSE {
@@ -59,21 +54,28 @@ func AddOwnerApply(c *gin.Context) {
 
 // 查询业主申请
 func GetOwnerApply(c *gin.Context) {
-	size, _ := strconv.Atoi(c.PostForm("size"))
-	page, _ := strconv.Atoi(c.PostForm("page"))
-	user_id := c.PostForm("user_id")
+	// size, _ := strconv.Atoi(c.PostForm("size"))
+	// page, _ := strconv.Atoi(c.PostForm("page"))
+	// user_id := c.PostForm("user_id")
 
+	var formData FormDataList
+	// 使用 ShouldBindJSON 解析请求数据到结构体
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
 	switch {
-	case size > 100:
-		size = 100
-	case size <= 0:
-		size = 10
+	case formData.Size > 100:
+		formData.Size = 100
+	case formData.Size <= 0:
+		formData.Size = 10
 	}
-	if page == 0 {
-		page = 1
+	if formData.Page == 0 {
+		formData.Page = 1
 	}
 
-	data, code := model.TywGetOwners(size, page, user_id)
+	data, code := model.TywGetOwners(formData.Size, formData.Page, formData.UserId)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"data": data,
@@ -101,14 +103,22 @@ func GetOwnerApply(c *gin.Context) {
 // 编辑申请状态
 func EditApplyState(c *gin.Context) {
 	// username := c.PostForm("username")
-	ID, _ := strconv.Atoi(c.PostForm("id"))
-	state, _ := strconv.Atoi(c.PostForm("state"))
-	log.Printf("----------------ID = %v", ID)
-	log.Printf("----------------state = %v", state)
+	// ID, _ := strconv.Atoi(c.PostForm("id"))
+	// state, _ := strconv.Atoi(c.PostForm("state"))
+	var formData FormIdData
+	// 使用 ShouldBindJSON 解析请求数据到结构体
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
 
-	info, code := model.GetOwnersInfo(ID)
+	log.Printf("----------------ID = %v", formData.ID)
+	log.Printf("----------------state = %v", formData.State)
+
+	info, code := model.GetOwnersInfo(formData.ID)
 	if code == errmsg.SUCCSE {
-		info.State = state
+		info.State = formData.State
 		// default_community := c.PostForm("default_community")
 		// default_room := c.PostForm("default_room")
 		// user_id := c.PostForm("user_id")
@@ -119,10 +129,10 @@ func EditApplyState(c *gin.Context) {
 		// c.ShouldBindJSON(&cate)
 		log.Printf("----------------info.State = %v", info.State)
 
-		code := model.TywEditOwnerState(ID, state)
+		code := model.TywEditOwnerState(formData.ID, formData.State)
 		if code == errmsg.SUCCSE {
 			user := model.TywUser{
-				State:            state,
+				State:            formData.State,
 				DefaultCommunity: info.Community,
 				DefaultRoom:      info.Room,
 				UserId:           info.UserId,
@@ -149,9 +159,15 @@ func EditApplyState(c *gin.Context) {
 // 删除申请数据
 func DeleteOwner(c *gin.Context) {
 	// user_id := c.PostForm("user_id")
-	id, _ := strconv.Atoi(c.PostForm("id"))
-
-	code := model.DeleteOwner(id)
+	// id, _ := strconv.Atoi(c.PostForm("id"))
+	var formData FormIdData
+	// 使用 ShouldBindJSON 解析请求数据到结构体
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	code := model.DeleteOwner(formData.ID)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  errmsg.GetErrMsg(code),

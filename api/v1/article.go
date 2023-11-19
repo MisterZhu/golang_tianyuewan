@@ -6,7 +6,6 @@ import (
 	"gindiary/util/errmsg"
 
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,18 +14,21 @@ import (
 添加文章
 */
 func AddArticle(c *gin.Context) {
-	// var data model.Article
-	title := c.PostForm("title")
-	content := c.PostForm("content")
-	img := c.PostForm("img")
-	// cid := c.PostForm("cid")
-	cid, _ := strconv.Atoi(c.PostForm("cid"))
+	// title := c.PostForm("title")
+	// content := c.PostForm("content")
+	// img := c.PostForm("img")
+	// cid, _ := strconv.Atoi(c.PostForm("cid"))
+	// data := model.Article{
+	// 	Cid:     cid,
+	// 	Img:     img,
+	// 	Content: content,
+	// 	Title:   title,
+	// }
 
-	data := model.Article{
-		Cid:     cid,
-		Img:     img,
-		Content: content,
-		Title:   title,
+	var data model.Article
+	if err := c.ShouldBindJSON(&data); err != nil {
+		response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
+		return
 	}
 	// _ = c.ShouldBindJSON(&data)
 	code := model.CreateArt(&data)
@@ -40,21 +42,23 @@ func AddArticle(c *gin.Context) {
 
 // 查询分类下的所有文章
 func GetCateArts(c *gin.Context) {
-	size, _ := strconv.Atoi(c.PostForm("size"))
-	page, _ := strconv.Atoi(c.PostForm("page"))
-	id, _ := strconv.Atoi(c.PostForm("id"))
-
+	var formData FormDataList
+	// 使用 ShouldBindJSON 解析请求数据到结构体
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
 	switch {
-	case size > 100:
-		size = 100
-	case size <= 0:
-		size = 10
+	case formData.Size > 100:
+		formData.Size = 100
+	case formData.Size <= 0:
+		formData.Size = 10
 	}
-	if page == 0 {
-		page = 1
+	if formData.Page == 0 {
+		formData.Page = 1
 	}
 
-	data, code := model.GetCateArt(id, size, page)
+	data, code := model.GetCateArt(formData.ID, formData.Size, formData.Page)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"data": data,
@@ -64,8 +68,13 @@ func GetCateArts(c *gin.Context) {
 
 // 查询单个文章
 func GetArticleInfo(c *gin.Context) {
-	id, _ := strconv.Atoi(c.PostForm("id"))
-	data, code := model.GetArtInfo(id)
+	// id, _ := strconv.Atoi(c.PostForm("id"))
+	var formData FormDataList
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	data, code := model.GetArtInfo(formData.ID)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"data": data,
@@ -75,20 +84,13 @@ func GetArticleInfo(c *gin.Context) {
 
 // 查询文章列表
 func GetArts(c *gin.Context) {
-	size, _ := strconv.Atoi(c.PostForm("size"))
-	page, _ := strconv.Atoi(c.PostForm("page"))
-
-	switch {
-	case size > 100:
-		size = 100
-	case size <= 0:
-		size = 10
-	}
-	if page == 0 {
-		page = 1
+	var formData FormDataList
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
 	}
 
-	data, code := model.GetArts(size, page)
+	data, code := model.GetArts(formData.Size, formData.Page)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"data": data,
@@ -117,9 +119,13 @@ func EditArticle(c *gin.Context) {
 // 删除
 func DeleteArticle(c *gin.Context) {
 	// id, _ := strconv.Atoi(c.PostForm("id"))
-	id, _ := strconv.Atoi(c.PostForm("id"))
-
-	code := model.DeleteArticle(id)
+	// id, _ := strconv.Atoi(c.PostForm("id"))
+	var formData FormDataList
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	code := model.DeleteArticle(formData.ID)
 
 	response.Response(c, http.StatusOK, 200, errmsg.GetErrMsg(code), nil)
 

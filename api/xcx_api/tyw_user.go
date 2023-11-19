@@ -12,7 +12,6 @@ import (
 	"github.com/segmentio/ksuid"
 
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,13 +21,19 @@ import (
 */
 func TywUserLogin(c *gin.Context) {
 
-	Code := c.PostForm("code")
+	// Code := c.PostForm("code")
 	// InviterID := c.PostForm("inviter_id")
-
-	fmt.Printf("\nloginData :%s\n", Code)
+	var formData FormCodeData
+	// 使用 ShouldBindJSON 解析请求数据到结构体
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	fmt.Printf("\nloginData :%s\n", formData.Code)
 
 	url := "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code "
-	url = fmt.Sprintf(url, util.AppID, util.AppSecret, Code)
+	url = fmt.Sprintf(url, util.AppID, util.AppSecret, formData.Code)
 
 	// 发起请求
 	res, _ := http.Get(url)
@@ -98,9 +103,14 @@ func TywUserLogin(c *gin.Context) {
 */
 func TywDeleteUser(c *gin.Context) {
 	// user_id := c.PostForm("user_id")
-	id, _ := strconv.Atoi(c.PostForm("id"))
-
-	code := model.DeleteUser(id)
+	// id, _ := strconv.Atoi(c.PostForm("id"))
+	var formData FormIdData
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	code := model.DeleteUser(formData.ID)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  errmsg.GetErrMsg(code),
@@ -109,24 +119,25 @@ func TywDeleteUser(c *gin.Context) {
 
 // 用户审核
 func TywCheckUser(c *gin.Context) {
-	state, _ := strconv.Atoi(c.PostForm("state"))
-	// default_community, _ := strconv.Atoi(c.PostForm("default_community"))
-	// default_room, _ := strconv.Atoi(c.PostForm("default_room"))
-	default_community := c.PostForm("default_community")
-	default_room := c.PostForm("default_room")
-	user_id := c.PostForm("default_room")
 
-	fmt.Printf("\n user_id :%s\n", user_id)
-	fmt.Printf("\n state :%d\n", state)
-	fmt.Printf("\n default_community :%s\n", default_community)
-	fmt.Printf("\n default_room :%s\n", default_room)
+	var posts model.TywUser
+	if err := c.ShouldBindJSON(&posts); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+
+	fmt.Printf("\n user_id :%s\n", posts.UserId)
+	fmt.Printf("\n state :%d\n", posts.State)
+	fmt.Printf("\n default_community :%s\n", posts.DefaultCommunity)
+	fmt.Printf("\n default_room :%s\n", posts.DefaultRoom)
 
 	// 获取上下文中小程序用户信息
 	tywUser := c.Value("user").(model.TywUser)
-	tywUser.State = state
-	tywUser.DefaultCommunity = default_community
-	tywUser.DefaultRoom = default_room
-	tywUser.UserId = user_id
+	tywUser.State = posts.State
+	tywUser.DefaultCommunity = posts.DefaultCommunity
+	tywUser.DefaultRoom = posts.DefaultRoom
+	tywUser.UserId = posts.UserId
 
 	model.TywEditXcxUserInfo(&tywUser)
 
@@ -140,11 +151,16 @@ func TywCheckUser(c *gin.Context) {
 
 // 用户修改昵称
 func TywChangeUserName(c *gin.Context) {
-	user_name := c.PostForm("user_name")
-	fmt.Printf("\n user_name :%s\n", user_name)
+	var posts model.TywUser
+	if err := c.ShouldBindJSON(&posts); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	fmt.Printf("\n posts.Username :%s\n", posts.Username)
 	// 获取上下文中小程序用户信息
 	tywUser := c.Value("user").(model.TywUser)
-	tywUser.Username = user_name
+	tywUser.Username = posts.Username
 
 	model.TywEditXcxUserName(&tywUser)
 

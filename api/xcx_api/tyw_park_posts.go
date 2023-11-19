@@ -8,7 +8,6 @@ import (
 	"log"
 
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,84 +30,25 @@ func AddParkPosts(c *gin.Context) {
 	response.Success(c, errmsg.GetErrMsg(errmsg.SUCCSE), nil)
 }
 
-// func AddParkPosts(c *gin.Context) {
-// 	var posts = model.TywParkPostsModel{}
-// 	c.ShouldBindJSON(&posts)
-
-// 	var requestData struct {
-// 		UserId        string `form:"user_id"`
-// 		WeiXin        string `form:"weixin"`
-// 		PostsType     int    `form:"posts_type"`
-// 		ImgUrl        string `form:"img_url"`
-// 		Telephone     string `form:"telephone"`
-// 		InMaintenance bool   `form:"in_maintenance"`
-// 		Negotiable    bool   `form:"negotiable"`
-// 		Title         string `form:"title"`
-// 	}
-
-// 	if err := c.ShouldBind(&requestData); err != nil {
-// 		// 处理参数绑定错误
-// 		log.Printf("Error binding request data: %v", err)
-// 		response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
-// 		return
-// 	}
-
-// 	data := model.TywParkPostsModel{
-// 		UserId:        requestData.UserId,
-// 		WeiXin:        requestData.WeiXin,
-// 		State:         0,
-// 		PostsType:     requestData.PostsType,
-// 		ImgUrl:        requestData.ImgUrl,
-// 		Telephone:     requestData.Telephone,
-// 		InMaintenance: requestData.InMaintenance,
-// 		Negotiable:    requestData.Negotiable,
-// 		Title:         requestData.Title,
-// 	}
-// 	log.Printf("data = %+v", data)
-// 	log.Printf("c = %v", c)
-// 	model.TywCreateParkPosts(&data)
-// 	response.Success(c, errmsg.GetErrMsg(errmsg.SUCCSE), nil)
-// }
-
-// func AddParkPosts(c *gin.Context) {
-
-// 	user_id := c.PostForm("user_id")
-// 	weixin := c.PostForm("weixin")
-// 	posts_type, _ := strconv.Atoi(c.PostForm("posts_type"))
-// 	img_url := c.PostForm("img_url")
-// 	telephone := c.PostForm("telephone")
-
-// 	data := model.TywParkPostsModel{
-// 		UserId:    user_id,
-// 		WeiXin:    weixin,
-// 		State:     0,
-// 		PostsType: posts_type,
-// 		ImgUrl:    img_url,
-// 		Telephone: telephone,
-// 	}
-// 	log.Printf("data = %v", data)
-// 	log.Printf("c = %v", c)
-// 	model.TywCreateParkPosts(&data)
-// 	response.Success(c, errmsg.GetErrMsg(errmsg.SUCCSE), nil)
-// }
-
 // 查询帖子列表
 func GetParkPosts(c *gin.Context) {
-	size, _ := strconv.Atoi(c.PostForm("size"))
-	page, _ := strconv.Atoi(c.PostForm("page"))
-	posts_type, _ := strconv.Atoi(c.PostForm("posts_type"))
-	user_id := c.PostForm("user_id")
-	switch {
-	case size > 100:
-		size = 100
-	case size <= 0:
-		size = 10
+	var formData FormDataList
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
 	}
-	if page == 0 {
-		page = 1
+	switch {
+	case formData.Size > 100:
+		formData.Size = 100
+	case formData.Size <= 0:
+		formData.Size = 10
+	}
+	if formData.Page == 0 {
+		formData.Page = 1
 	}
 
-	data, code := model.TywGetParkPostss(size, page, posts_type, user_id)
+	data, code := model.TywGetParkPostss(formData.Size, formData.Page, formData.PostsType, formData.UserId)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"data": data,
@@ -120,14 +60,13 @@ func GetParkPosts(c *gin.Context) {
 
 // 编辑帖子
 func EditPostsState(c *gin.Context) {
-	// username := c.PostForm("username")
-	ID, _ := strconv.Atoi(c.PostForm("id"))
-	state, _ := strconv.Atoi(c.PostForm("state"))
-
-	// 使用map获取请求参数 接受参数方法与传参方式有很大关系
-	// var cate = model.TywParkPostsModel{}
-	// c.ShouldBindJSON(&cate)
-	code := model.TywEditParkPostsState(ID, state)
+	var formData FormIdData
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	code := model.TywEditParkPostsState(formData.ID, formData.State)
 	if code == errmsg.SUCCSE {
 		response.Success(c, errmsg.GetErrMsg(code), nil)
 	} else {
@@ -139,8 +78,14 @@ func EditPostsState(c *gin.Context) {
 // 删除帖子
 func DeletePosts(c *gin.Context) {
 	// user_id := c.PostForm("user_id")
-	id, _ := strconv.Atoi(c.PostForm("id"))
-	code := model.DeleteParkPosts(id)
+	// id, _ := strconv.Atoi(c.PostForm("id"))
+	var formData FormIdData
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	code := model.DeleteParkPosts(formData.ID)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  errmsg.GetErrMsg(code),

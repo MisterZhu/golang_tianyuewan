@@ -5,10 +5,7 @@ import (
 	"gindiary/response"
 	"gindiary/util/errmsg"
 	"log"
-	"strings"
-
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,18 +15,25 @@ import (
 */
 func AddCategory(c *gin.Context) {
 
-	name := c.PostForm("title")
-	content := c.PostForm("content")
-	imageUrlsAry := c.PostFormArray("imageUrls")
-	image_urls := strings.Join(imageUrlsAry, ",")
+	// name := c.PostForm("title")
+	// content := c.PostForm("content")
+	// imageUrlsAry := c.PostFormArray("imageUrls")
 
-	data := model.Category{
-		Name:      name,
-		Content:   content,
-		ImageUrls: image_urls,
+	var data model.Category
+	// 使用 ShouldBindJSON 解析请求数据到结构体
+	if err := c.ShouldBindJSON(&data); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
 	}
-	log.Printf("imageUrlsAry = %v", imageUrlsAry)
-	log.Printf("image_urls = %v", image_urls)
+	// image_urls := strings.Join(formData.ImageUrls, ",")
+
+	// data := model.Category{
+	// 	Name:      formData.Name,
+	// 	Content:   formData.Content,
+	// 	ImageUrls: image_urls,
+	// }
+	log.Printf("imageUrlsAry = %v", data.ImageUrls)
 
 	log.Printf("data = %v", data)
 	log.Printf("c = %v", c)
@@ -49,20 +53,23 @@ func AddCategory(c *gin.Context) {
 
 // 查询分类
 func GetCategory(c *gin.Context) {
-	size, _ := strconv.Atoi(c.PostForm("size"))
-	page, _ := strconv.Atoi(c.PostForm("page"))
-
+	var formData FormDataList
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
 	switch {
-	case size > 100:
-		size = 100
-	case size <= 0:
-		size = 10
+	case formData.Size > 100:
+		formData.Size = 100
+	case formData.Size <= 0:
+		formData.Size = 10
 	}
-	if page == 0 {
-		page = 1
+	if formData.Page == 0 {
+		formData.Page = 1
 	}
 
-	data := model.GetCates(size, page)
+	data := model.GetCates(formData.Size, formData.Page)
 	code := errmsg.SUCCSE
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
@@ -75,10 +82,14 @@ func GetCategory(c *gin.Context) {
 
 // 查询分类详情
 func GetCategoryDet(c *gin.Context) {
-	id, _ := strconv.Atoi(c.PostForm("id"))
-	// id := c.PostForm("id")
-
-	data, code := model.CheckCategoryDet(id)
+	// id, _ := strconv.Atoi(c.PostForm("id"))
+	var formData FormIdData
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	data, code := model.CheckCategoryDet(formData.ID)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"data": data,
@@ -110,9 +121,14 @@ func EditCategory(c *gin.Context) {
 // 删除
 func DeleteCategory(c *gin.Context) {
 	// id, _ := strconv.Atoi(c.PostForm("id"))
-	userId, _ := strconv.Atoi(c.PostForm("id"))
-
-	code := model.DeleteCategory(userId)
+	//userId, _ := strconv.Atoi(c.PostForm("id"))
+	var formData FormIdData
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	code := model.DeleteCategory(formData.ID)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  errmsg.GetErrMsg(code),
