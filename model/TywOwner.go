@@ -8,12 +8,13 @@ import (
 
 type TywOwnerModel struct {
 	gorm.Model
-	Community string `gorm:"type:varchar(1024);not null " json:"community"`
-	Room      string `gorm:"type:varchar(200);not null " json:"room"`
-	State     int    `gorm:"type:int " json:"state"`
-	UserId    string `gorm:"type:text;not null" json:"user_id"`
-	Telephone string `gorm:"type:varchar(110);not null" json:"telephone"`
-	ImgUrl    string `gorm:"type:text;not null" json:"img_url"`
+	CommunityId int    `gorm:"type:int " json:"community_id"`
+	Community   string `gorm:"type:varchar(1024);not null " json:"community"`
+	Room        string `gorm:"type:varchar(200);not null " json:"room"`
+	State       int    `gorm:"type:int " json:"state"`
+	UserId      string `gorm:"type:text;not null" json:"user_id"`
+	Telephone   string `gorm:"type:varchar(110);not null" json:"telephone"`
+	ImgUrl      string `gorm:"type:text;not null" json:"img_url"`
 }
 
 // 新增申请

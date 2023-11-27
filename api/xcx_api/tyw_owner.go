@@ -29,7 +29,7 @@ func AddOwnerApply(c *gin.Context) {
 		response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
 		return
 	}
-	data.State = 0
+	data.State = 1
 
 	code := model.TywCreateOwner(&data)
 	if code == errmsg.SUCCSE {
@@ -132,11 +132,12 @@ func EditApplyState(c *gin.Context) {
 		code := model.TywEditOwnerState(formData.ID, formData.State)
 		if code == errmsg.SUCCSE {
 			user := model.TywUser{
-				State:            formData.State,
-				DefaultCommunity: info.Community,
-				DefaultRoom:      info.Room,
-				UserId:           info.UserId,
-				Telephone:        info.Telephone,
+				State:              formData.State,
+				DefaultCommunity:   info.Community,
+				DefaultRoom:        info.Room,
+				UserId:             info.UserId,
+				Telephone:          info.Telephone,
+				DefaultCommunityId: info.CommunityId,
 			}
 			code1 := model.TywEditXcxUserInfo(&user)
 			if code1 == errmsg.SUCCSE {

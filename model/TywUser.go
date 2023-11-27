@@ -7,19 +7,20 @@ import (
 )
 
 type TywUser struct {
-	ID               uint      `gorm:"primary_key;auto_increment" json:"id"`
-	Username         string    `gorm:"type:varchar(20);not null " json:"username"`
-	Avatar           string    `gorm:"type:varchar(200);not null " json:"avater"`
-	Password         string    `gorm:"type:varchar(200);not null " json:"password"`
-	Telephone        string    `gorm:"type:varchar(110);not null" json:"telephone"`
-	Role             int       `gorm:"type:int " json:"role"`
-	UserId           string    `gorm:"type:varchar(200);not null " json:"user_id"`
-	OpenId           string    `gorm:"type:varchar(200);not null " json:"open_id"`
-	State            int       `gorm:"type:int " json:"state"`
-	DefaultCommunity string    `gorm:"type:varchar(200);not null " json:"default_community"`
-	DefaultRoom      string    `gorm:"type:varchar(200);not null " json:"default_room"`
-	CreatedAt        time.Time `gorm:"type:datetime;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt        time.Time `gorm:"type:datetime;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" json:"updated_at"`
+	ID                 uint      `gorm:"primary_key;auto_increment" json:"id"`
+	Username           string    `gorm:"type:varchar(20);not null " json:"username"`
+	Avatar             string    `gorm:"type:varchar(200);not null " json:"avater"`
+	Password           string    `gorm:"type:varchar(200);not null " json:"password"`
+	Telephone          string    `gorm:"type:varchar(110);not null" json:"telephone"`
+	Role               int       `gorm:"type:int " json:"role"`
+	UserId             string    `gorm:"type:varchar(200);not null " json:"user_id"`
+	OpenId             string    `gorm:"type:varchar(200);not null " json:"open_id"`
+	State              int       `gorm:"type:int " json:"state"`
+	DefaultCommunity   string    `gorm:"type:varchar(200);not null " json:"default_community"`
+	DefaultCommunityId int       `gorm:"type:int " json:"default_community_id"`
+	DefaultRoom        string    `gorm:"type:varchar(200);not null " json:"default_room"`
+	CreatedAt          time.Time `gorm:"type:datetime;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt          time.Time `gorm:"type:datetime;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 // 查询用户OpenId是否存在
