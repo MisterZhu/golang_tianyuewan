@@ -18,6 +18,8 @@ type TywParkPostsModel struct {
 	Title         string `gorm:"type:text;not null" json:"title"`
 	ImgUrl        string `gorm:"type:text;not null" json:"img_url"`
 	AnnualRent    string `gorm:"type:text;not null" json:"annual_rent"`
+	CommunityId   int    `gorm:"type:int " json:"community_id"`
+	Address       string `gorm:"type:text;not null" json:"address"`
 }
 
 // 新增帖子
