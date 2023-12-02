@@ -72,6 +72,11 @@ func InitRouter() {
 		router.POST("/park_posts/edit", v2.EditPostsState)
 		router.POST("/park_posts/det", v2.DeletePosts)
 
+		//小程序建议反馈
+		router.POST("/feedback/add", v2.AddFeedback)
+		router.POST("/feedback/get", v2.GetFeedback)
+		router.POST("/feedback/det", v2.DeleteFeedback)
+
 	}
 	tyw_xcx_router := r.Group("api/v3")
 	{
@@ -106,6 +111,11 @@ func InitRouter() {
 		tyw_xcx_router.POST("/community/get", v2.GetCommunity)
 		tyw_xcx_router.POST("/community/edit", v2.EdiCommunityState)
 		tyw_xcx_router.POST("/community/det", v2.DeleteCommunity)
+
+		//小程序建议反馈
+		tyw_xcx_router.POST("/feedback/add", v2.AddFeedback)
+		tyw_xcx_router.POST("/feedback/get", v2.GetFeedback)
+		tyw_xcx_router.POST("/feedback/det", v2.DeleteFeedback)
 	}
 	xcx_router := r.Group("api/v2")
 	{
