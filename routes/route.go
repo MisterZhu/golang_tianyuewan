@@ -105,6 +105,7 @@ func InitRouter() {
 		tyw_xcx_router.POST("/user/park_posts_list", v2.GetParkPosts)
 		tyw_xcx_router.POST("/user/edit_park_posts", v2.EditPostsState)
 		tyw_xcx_router.POST("/user/delete_park_posts", v2.DeletePosts)
+		tyw_xcx_router.POST("/user/detail_park_posts", v2.GetParkInfo)
 
 		//天悦湾后台管理 社区区管理接口
 		tyw_xcx_router.POST("/community/add", v2.AddCommunity)

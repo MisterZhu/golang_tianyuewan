@@ -58,6 +58,22 @@ func GetParkPosts(c *gin.Context) {
 
 }
 
+// 查询单个帖子
+func GetParkInfo(c *gin.Context) {
+	// id, _ := strconv.Atoi(c.PostForm("id"))
+	var formData FormIdData
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	data, code := model.TywGetParkPostsInfo(formData.ID)
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"data": data,
+		"msg":  errmsg.GetErrMsg(code),
+	})
+}
+
 // 编辑帖子
 func EditPostsState(c *gin.Context) {
 	var formData FormIdData

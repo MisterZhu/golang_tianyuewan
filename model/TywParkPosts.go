@@ -64,6 +64,17 @@ func TywGetParkPostss(size, page, postType int, userID string) ([]TywParkPostsMo
 	return posts, errmsg.SUCCSE
 }
 
+// todo 查询单个文章
+func TywGetParkPostsInfo(id int) (TywParkPostsModel, int) {
+	var art TywParkPostsModel
+	err := db.Where("id = ?", id).First(&art).Error
+	if err != nil {
+		return art, errmsg.ERR_ART_NONE
+	}
+	return art, errmsg.SUCCSE
+
+}
+
 // 编辑帖子信息
 func TywEditParkPostsState(id int, newState int) int {
 	var art TywParkPostsModel
