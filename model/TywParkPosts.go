@@ -75,6 +75,7 @@ func TywGetParkPostsInfo(id int) (TywParkPostsModel, int) {
 
 }
 
+
 // 编辑帖子信息
 func TywEditParkPostsState(id int, newState int) int {
 	var art TywParkPostsModel
