@@ -53,7 +53,7 @@ func GetArtInfo(id int) (Article, int) {
 // 查询文章列表
 func GetArts(size int, page int) ([]Article, int) {
 	var art []Article
-	err = db.Preload("Category").Limit(size).Offset((page - 1) * size).Find(&art).Error
+	err = db.Preload("Category").Limit(size).Offset(page * size).Find(&art).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, errmsg.ERROR
 	}

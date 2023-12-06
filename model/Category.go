@@ -50,7 +50,7 @@ func CreateCategory(data *Category) int {
 // 查询分类列表
 func GetCates(size int, page int) []Category {
 	var cate []Category
-	err = db.Limit(size).Offset((page - 1) * size).Find(&cate).Error
+	err = db.Limit(size).Offset(page * size).Find(&cate).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil
 	}

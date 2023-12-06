@@ -65,9 +65,7 @@ func GetCategory(c *gin.Context) {
 	case formData.Size <= 0:
 		formData.Size = 10
 	}
-	if formData.Page == 0 {
-		formData.Page = 1
-	}
+	
 
 	data := model.GetCates(formData.Size, formData.Page)
 	code := errmsg.SUCCSE

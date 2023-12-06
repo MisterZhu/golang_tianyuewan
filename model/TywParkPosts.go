@@ -44,7 +44,7 @@ specificUserPosts := TywGetParkPostss(10, 1, 0, "specificUserID")
 // 查询所有帖子列表（postType可传，不传就是查询所有的帖子，postType=1是出租车位帖子，postType=2为求租帖子）
 func TywGetParkPostss(size, page, postType int, userID string) ([]TywParkPostsModel, int) {
 	var posts []TywParkPostsModel
-	dbQuery := db.Order("created_at desc").Limit(size).Offset((page - 1) * size)
+	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
 
 	// 根据 postType 进行过滤
 	if postType != 0 {
@@ -74,7 +74,6 @@ func TywGetParkPostsInfo(id int) (TywParkPostsModel, int) {
 	return art, errmsg.SUCCSE
 
 }
-
 
 // 编辑帖子信息
 func TywEditParkPostsState(id int, newState int) int {

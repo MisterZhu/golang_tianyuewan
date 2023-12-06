@@ -35,8 +35,8 @@ func CreateXcxAnaly(data *XcxAnalyModel) int {
 func GetAnalys(size int, page int, userId string) []XcxAnalyModel {
 
 	var cate []XcxAnalyModel
-	// err = db.Limit(size).Offset((page - 1) * size).Find(&cate).Error
-	err = db.Order("updated_at desc").Where("user_id = ?", userId).Limit(size).Offset((page - 1) * size).Find(&cate).Error
+	// err = db.Limit(size).Offset(page * size).Find(&cate).Error
+	err = db.Order("updated_at desc").Where("user_id = ?", userId).Limit(size).Offset(page * size).Find(&cate).Error
 
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil

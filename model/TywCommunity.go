@@ -31,7 +31,7 @@ func TywCreateCommunity(data *TywCommunityModel) int {
 // 查询社区列表
 func TywGetCommunitys(size, page int) ([]TywCommunityModel, int) {
 	var posts []TywCommunityModel
-	dbQuery := db.Order("created_at desc").Limit(size).Offset((page - 1) * size)
+	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
 
 	err := dbQuery.Find(&posts).Error
 	if err != nil && err != gorm.ErrRecordNotFound {

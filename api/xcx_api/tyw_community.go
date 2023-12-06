@@ -76,9 +76,7 @@ func GetCommunity(c *gin.Context) {
 	case formData.Size <= 0:
 		formData.Size = 10
 	}
-	if formData.Page == 0 {
-		formData.Page = 1
-	}
+
 
 	data, code := model.TywGetCommunitys(formData.Size, formData.Page)
 	c.JSON(http.StatusOK, gin.H{

@@ -25,7 +25,7 @@ func TywCreateFeedback(data *TywFeedbackModel) int {
 // 查询所有申请列表
 func TywGetFeedbacks(size, page int) ([]TywFeedbackModel, int) {
 	var posts []TywFeedbackModel
-	dbQuery := db.Order("created_at desc").Limit(size).Offset((page - 1) * size)
+	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
 
 	err := dbQuery.Find(&posts).Error
 	if err != nil && err != gorm.ErrRecordNotFound {

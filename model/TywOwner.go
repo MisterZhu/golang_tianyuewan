@@ -30,7 +30,7 @@ func TywCreateOwner(data *TywOwnerModel) int {
 // 查询所有申请列表
 func TywGetOwners(size, page int, userID string) ([]TywOwnerModel, int) {
 	var posts []TywOwnerModel
-	dbQuery := db.Order("created_at desc").Limit(size).Offset((page - 1) * size)
+	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
 
 	// 根据 userID 进行过滤
 	if userID != "" {
@@ -60,8 +60,8 @@ func GetOwnersInfo(id int) (TywOwnerModel, int) {
 // func TywGetOwners(size int, page int) []TywOwnerModel {
 
 // 	var cate []TywOwnerModel
-// 	// err = db.Limit(size).Offset((page - 1) * size).Find(&cate).Error
-// 	err = db.Order("updated_at desc").Limit(size).Offset((page - 1) * size).Find(&cate).Error
+// 	// err = db.Limit(size).Offset(page * size).Find(&cate).Error
+// 	err = db.Order("updated_at desc").Limit(size).Offset(page * size).Find(&cate).Error
 
 // 	if err != nil && err != gorm.ErrRecordNotFound {
 // 		return nil
@@ -73,7 +73,7 @@ func GetOwnersInfo(id int) (TywOwnerModel, int) {
 //
 //	func GetCates(size int, page int) []Category {
 //		var cate []Category
-//		err = db.Limit(size).Offset((page - 1) * size).Find(&cate).Error
+//		err = db.Limit(size).Offset(page * size).Find(&cate).Error
 //		if err != nil && err != gorm.ErrRecordNotFound {
 //			return nil
 //		}
