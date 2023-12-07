@@ -13,10 +13,11 @@ import (
 )
 
 type FormDataList struct {
-	Size      int    `json:"size"`
-	Page      int    `json:"page"`
-	UserId    string `json:"user_id"`
-	PostsType int    `json:"posts_type"`
+	Size        int    `json:"size"`
+	Page        int    `json:"page"`
+	UserId      string `json:"user_id"`
+	PostsType   int    `json:"posts_type"`
+	CommunityId int    `json:"community_id"`
 }
 type FormIdData struct {
 	ID     int    `json:"id"`
@@ -76,7 +77,6 @@ func GetCommunity(c *gin.Context) {
 	case formData.Size <= 0:
 		formData.Size = 10
 	}
-
 
 	data, code := model.TywGetCommunitys(formData.Size, formData.Page)
 	c.JSON(http.StatusOK, gin.H{

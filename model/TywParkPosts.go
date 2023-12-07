@@ -42,7 +42,7 @@ specificUserPosts := TywGetParkPostss(10, 1, 0, "specificUserID")
 */
 
 // 查询所有帖子列表（postType可传，不传就是查询所有的帖子，postType=1是出租车位帖子，postType=2为求租帖子）
-func TywGetParkPostss(size, page, postType int, userID string) ([]TywParkPostsModel, int) {
+func TywGetParkPostss(size, page, postType int, userID string, communityId int) ([]TywParkPostsModel, int) {
 	var posts []TywParkPostsModel
 	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
 
@@ -54,6 +54,10 @@ func TywGetParkPostss(size, page, postType int, userID string) ([]TywParkPostsMo
 	// 根据 userID 进行过滤
 	if userID != "" {
 		dbQuery = dbQuery.Where("user_id = ?", userID)
+	}
+	// 根据 userID 进行过滤
+	if communityId != 0 {
+		dbQuery = dbQuery.Where("community_id = ?", communityId)
 	}
 
 	err := dbQuery.Find(&posts).Error

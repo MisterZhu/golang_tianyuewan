@@ -45,8 +45,7 @@ func GetParkPosts(c *gin.Context) {
 		formData.Size = 10
 	}
 
-
-	data, code := model.TywGetParkPostss(formData.Size, formData.Page, formData.PostsType, formData.UserId)
+	data, code := model.TywGetParkPostss(formData.Size, formData.Page, formData.PostsType, formData.UserId, formData.CommunityId)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"data": data,
