@@ -34,10 +34,11 @@ func AddOwnerApply(c *gin.Context) {
 	code := model.TywCreateOwner(&data)
 	if code == errmsg.SUCCSE {
 		user := model.TywUser{
-			State:            1,
-			DefaultCommunity: data.Community,
-			DefaultRoom:      data.Room,
-			UserId:           data.UserId,
+			State:              1,
+			DefaultCommunity:   data.Community,
+			DefaultCommunityId: data.CommunityId,
+			DefaultRoom:        data.Room,
+			UserId:             data.UserId,
 		}
 		code1 := model.TywEditXcxUserInfo(&user)
 		if code1 == errmsg.SUCCSE {
@@ -71,7 +72,6 @@ func GetOwnerApply(c *gin.Context) {
 	case formData.Size <= 0:
 		formData.Size = 10
 	}
-
 
 	data, code := model.TywGetOwners(formData.Size, formData.Page, formData.UserId)
 	c.JSON(http.StatusOK, gin.H{

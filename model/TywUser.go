@@ -51,10 +51,10 @@ func TywEditXcxUserInfo(data *TywUser) int {
 	var maps = make(map[string]interface{})
 	maps["State"] = data.State
 	maps["DefaultCommunity"] = data.DefaultCommunity
+	maps["DefaultCommunityId"] = data.DefaultCommunityId
 	maps["DefaultRoom"] = data.DefaultRoom
 	maps["Telephone"] = data.Telephone
 	fmt.Println("编辑用户")
-
 	err := db.Model(&user).Where("user_id = ?", data.UserId).Updates(maps).Error
 	if err != nil {
 		fmt.Println("编辑用户失败")
