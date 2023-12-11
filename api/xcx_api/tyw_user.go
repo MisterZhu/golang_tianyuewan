@@ -98,6 +98,31 @@ func TywUserLogin(c *gin.Context) {
 	}
 }
 
+// 查询帖子列表
+func GetTYWUsers(c *gin.Context) {
+	var formData FormDataList
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+	switch {
+	case formData.Size > 100:
+		formData.Size = 100
+	case formData.Size <= 0:
+		formData.Size = 10
+	}
+
+	data, code := model.TywGetUserList(formData.Size, formData.Page)
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"data": data,
+		"msg":  errmsg.GetErrMsg(code),
+	})
+	//response.Response(c, http.StatusOK, 200, errmsg.GetErrMsg(code), data)
+
+}
+
 /*
 删除用户
 */
@@ -110,7 +135,7 @@ func TywDeleteUser(c *gin.Context) {
 		c.JSON(400, gin.H{"message": "Invalid request data"})
 		return
 	}
-	code := model.DeleteUser(formData.ID)
+	code := model.DeleteTywUser(formData.ID)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  errmsg.GetErrMsg(code),

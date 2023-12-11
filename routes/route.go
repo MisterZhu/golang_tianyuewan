@@ -77,6 +77,10 @@ func InitRouter() {
 		router.POST("/feedback/get", v2.GetFeedback)
 		router.POST("/feedback/det", v2.DeleteFeedback)
 
+		//用户模块
+		router.POST("/tyw_user/det", v2.TywDeleteUser)
+		router.POST("/tyw_user/get", v2.GetTYWUsers)
+
 	}
 	tyw_xcx_router := r.Group("api/v3")
 	{
