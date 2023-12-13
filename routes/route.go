@@ -61,6 +61,12 @@ func InitRouter() {
 		router.POST("/community/edit", v2.EdiCommunityState)
 		router.POST("/community/det", v2.DeleteCommunity)
 
+		//天悦湾后台管理 修改配置字典接口
+		router.POST("/config/add", v2.AddConfig)
+		router.POST("/config/get", v2.GetConfig)
+		router.POST("/config/edit", v2.EdiConfigState)
+		router.POST("/config/det", v2.DeleteConfig)
+
 		//天悦湾后台管理 业主审核管理接口
 		router.POST("/apply_list/add", v2.AddOwnerApply)
 		router.POST("/apply_list/get", v2.GetOwnerApply)
