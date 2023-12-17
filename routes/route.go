@@ -72,6 +72,7 @@ func InitRouter() {
 		router.POST("/apply_list/get", v2.GetOwnerApply)
 		router.POST("/apply_list/edit", v2.EditApplyState)
 		router.POST("/apply_list/det", v2.DeleteOwner)
+		router.POST("/config/get_det", v2.GetDetailConfig)
 
 		//天悦湾后台管理 帖子管理接口
 		router.POST("/park_posts/get", v2.GetParkPosts)
@@ -127,6 +128,14 @@ func InitRouter() {
 		tyw_xcx_router.POST("/feedback/add", v2.AddFeedback)
 		tyw_xcx_router.POST("/feedback/get", v2.GetFeedback)
 		tyw_xcx_router.POST("/feedback/det", v2.DeleteFeedback)
+
+		//天悦湾后台管理 修改配置字典接口
+		tyw_xcx_router.POST("/config/add", v2.AddConfig)
+		tyw_xcx_router.POST("/config/get", v2.GetConfig)
+		tyw_xcx_router.POST("/config/edit", v2.EdiConfigState)
+		tyw_xcx_router.POST("/config/det", v2.DeleteConfig)
+		tyw_xcx_router.POST("/config/get_det", v2.GetDetailConfig)
+
 	}
 	xcx_router := r.Group("api/v2")
 	{

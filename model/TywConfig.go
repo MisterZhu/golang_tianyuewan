@@ -36,6 +36,17 @@ func TywGetConfigs(size, page int) ([]TywConfigModel, int) {
 	return posts, errmsg.SUCCSE
 }
 
+// todo 查询单个字典
+func TywGetConfigInfo(name string) (TywConfigModel, int) {
+	var art TywConfigModel
+	err := db.Where("name = ?", name).First(&art).Error
+	if err != nil {
+		return art, errmsg.ERR_ART_NONE
+	}
+	return art, errmsg.SUCCSE
+
+}
+
 // 编辑配置字典
 func TywEditConfigState(id int, newState string) int {
 	var art TywConfigModel

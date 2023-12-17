@@ -27,6 +27,9 @@ type FormIdData struct {
 type FormCodeData struct {
 	Code string `json:"code"`
 }
+type FormConfigData struct {
+	Name string `json:"name"`
+}
 
 /*
 新增社区

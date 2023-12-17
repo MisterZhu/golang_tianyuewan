@@ -118,3 +118,24 @@ func DeleteConfig(c *gin.Context) {
 	})
 
 }
+
+// 获取配置字典详情
+func GetDetailConfig(c *gin.Context) {
+	// user_id := c.PostForm("user_id")
+	// id, _ := strconv.Atoi(c.PostForm("id"))
+	var formData FormConfigData
+	// 使用 ShouldBindJSON 解析请求数据到结构体
+	if err := c.ShouldBindJSON(&formData); err != nil {
+		log.Printf("Error binding request data: %v", err)
+		c.JSON(400, gin.H{"message": "Invalid request data"})
+		return
+	}
+
+	data, code := model.TywGetConfigInfo(formData.Name)
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"data": data,
+		"msg":  errmsg.GetErrMsg(code),
+	})
+
+}
