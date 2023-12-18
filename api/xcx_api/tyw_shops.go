@@ -45,7 +45,7 @@ func GetShops(c *gin.Context) {
 		formData.Size = 10
 	}
 
-	data, code := model.TywGetShopss(formData.Size, formData.Page, formData.PostsType, formData.UserId, formData.CommunityId)
+	data, code := model.TywGetShopss(formData.Size, formData.Page, formData.PostsType)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"data": data,
