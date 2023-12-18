@@ -35,6 +35,18 @@ func InitDb() {
 	if err != nil {
 		panic("failed to connect database, err: " + err.Error())
 	}
-	db.AutoMigrate(&User{}, &Article{}, &Category{}, &XcxUser{}, &XcxAnalyModel{}, &TywUser{}, &TywOwnerModel{}, &TywParkPostsModel{}, &TywCommunityModel{}, &TywFeedbackModel{}, &TywConfigModel{})
+	db.AutoMigrate(
+		&User{},
+		&Article{},
+		&Category{},
+		&XcxUser{},
+		&XcxAnalyModel{},
+		&TywUser{},
+		&TywOwnerModel{},
+		&TywParkPostsModel{},
+		&TywCommunityModel{},
+		&TywFeedbackModel{},
+		&TywConfigModel{},
+		&TywShopsModel{})
 
 }

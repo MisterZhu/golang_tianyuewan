@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type TywParkPostsModel struct {
+type TywShopsModel struct {
 	gorm.Model
 	InMaintenance bool   `gorm:"type:bool" json:"in_maintenance"`
 	Negotiable    bool   `gorm:"type:bool" json:"negotiable"`
@@ -23,7 +23,7 @@ type TywParkPostsModel struct {
 }
 
 // 新增帖子
-func TywCreateParkPosts(data *TywParkPostsModel) int {
+func TywCreateShops(data *TywShopsModel) int {
 	// data.BeforeSave()
 	err := db.Create(&data).Error
 	if err != nil {
@@ -34,19 +34,19 @@ func TywCreateParkPosts(data *TywParkPostsModel) int {
 
 /*
 // 仅检索所有类型的帖子
-allPosts := TywGetParkPostss(10, 1, 0, "")
+allPosts := TywGetShopss(10, 1, 0, "")
 // 检索指定类型和用户的帖子
-userPosts := TywGetParkPostss(10, 1, 1, "specificUserID")
+userPosts := TywGetShopss(10, 1, 1, "specificUserID")
 // 仅检索指定用户的帖子
-specificUserPosts := TywGetParkPostss(10, 1, 0, "specificUserID")
+specificUserPosts := TywGetShopss(10, 1, 0, "specificUserID")
 */
 
 // 查询所有帖子列表（postType可传，不传就是查询所有的帖子，postType=1是出租车位帖子，postType=2为求租帖子）
-func TywGetParkPostss(size, page, postType int, userID string, communityId int) ([]TywParkPostsModel, int) {
-	var posts []TywParkPostsModel
+func TywGetShopss(size, page, postType int, userID string, communityId int) ([]TywShopsModel, int) {
+	var posts []TywShopsModel
 	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
 
-	// 根据 postType 进行过滤 1：出租 2：求租 3：出售 4：求购 5：二手闲置
+	// 根据 postType 进行过滤 1：家政 2：装修 3：废品回收
 	if postType != 0 {
 		dbQuery = dbQuery.Where("posts_type = ?", postType)
 	}
@@ -69,8 +69,8 @@ func TywGetParkPostss(size, page, postType int, userID string, communityId int) 
 }
 
 // todo 查询单个文章
-func TywGetParkPostsInfo(id int) (TywParkPostsModel, int) {
-	var art TywParkPostsModel
+func TywGetShopsInfo(id int) (TywShopsModel, int) {
+	var art TywShopsModel
 	err := db.Where("id = ?", id).First(&art).Error
 	if err != nil {
 		return art, errmsg.ERR_ART_NONE
@@ -80,8 +80,8 @@ func TywGetParkPostsInfo(id int) (TywParkPostsModel, int) {
 }
 
 // 编辑帖子信息
-func TywEditParkPostsState(id int, newState int) int {
-	var art TywParkPostsModel
+func TywEditShopsState(id int, newState int) int {
+	var art TywShopsModel
 	var maps = make(map[string]interface{})
 	maps["State"] = newState
 
@@ -94,8 +94,8 @@ func TywEditParkPostsState(id int, newState int) int {
 }
 
 // 删除 帖子
-func DeleteParkPosts(id int) int {
-	var cate TywParkPostsModel
+func DeleteShops(id int) int {
+	var cate TywShopsModel
 	err = db.Where("id = ?", id).Delete(&cate).Error
 
 	if err != nil {

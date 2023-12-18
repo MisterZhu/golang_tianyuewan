@@ -79,6 +79,13 @@ func InitRouter() {
 		router.POST("/park_posts/edit", v2.EditPostsState)
 		router.POST("/park_posts/det", v2.DeletePosts)
 
+		//配置服务商模块
+		router.POST("/user/add_shops", v2.AddShops)
+		router.POST("/user/shops_list", v2.GetShops)
+		router.POST("/user/edit_shops", v2.EditShopsState)
+		router.POST("/user/delete_shops", v2.DeleteShops)
+		router.POST("/user/detail_shops", v2.GetShopInfo)
+
 		//小程序建议反馈
 		router.POST("/feedback/add", v2.AddFeedback)
 		router.POST("/feedback/get", v2.GetFeedback)
@@ -117,6 +124,13 @@ func InitRouter() {
 		tyw_xcx_router.POST("/user/edit_park_posts", v2.EditPostsState)
 		tyw_xcx_router.POST("/user/delete_park_posts", v2.DeletePosts)
 		tyw_xcx_router.POST("/user/detail_park_posts", v2.GetParkInfo)
+
+		//配置服务商模块
+		tyw_xcx_router.POST("/user/add_shops", v2.AddShops)
+		tyw_xcx_router.POST("/user/shops_list", v2.GetShops)
+		tyw_xcx_router.POST("/user/edit_shops", v2.EditShopsState)
+		tyw_xcx_router.POST("/user/delete_shops", v2.DeleteShops)
+		tyw_xcx_router.POST("/user/detail_shops", v2.GetShopInfo)
 
 		//天悦湾后台管理 社区区管理接口
 		tyw_xcx_router.POST("/community/add", v2.AddCommunity)
