@@ -44,7 +44,7 @@ specificUserPosts := TywGetShopss(10, 1, 0, "specificUserID")
 // 查询所有帖子列表（postType可传，不传就是查询所有的帖子，postType=1是出租车位帖子，postType=2为求租帖子）
 func TywGetShopss(size, page, postType int) ([]TywShopsModel, int) {
 	var posts []TywShopsModel
-	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
+	dbQuery := db.Order("updated_at asc").Limit(size).Offset(page * size)
 
 	// 根据 postType 进行过滤 1：家政 2：装修 3：废品回收
 	if postType != 0 {

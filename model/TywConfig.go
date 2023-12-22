@@ -26,7 +26,7 @@ func TywCreateConfig(data *TywConfigModel) int {
 // 查询配置字典列表
 func TywGetConfigs(size, page int) ([]TywConfigModel, int) {
 	var posts []TywConfigModel
-	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
+	dbQuery := db.Order("updated_at asc").Limit(size).Offset(page * size)
 
 	err := dbQuery.Find(&posts).Error
 	if err != nil && err != gorm.ErrRecordNotFound {

@@ -29,6 +29,7 @@ func InitRouter() {
 		//用户模块路由接口
 		router.POST("/user/register", v1.Register)
 		router.POST("/user/login", v1.Login)
+		router.POST("/config/get_det", v2.GetDetailConfig)
 
 		//token校验 --  以下接口都需要校验token，如果不想校验，请写在上边
 		router.Use(authMiddleware)
@@ -72,7 +73,6 @@ func InitRouter() {
 		router.POST("/apply_list/get", v2.GetOwnerApply)
 		router.POST("/apply_list/edit", v2.EditApplyState)
 		router.POST("/apply_list/det", v2.DeleteOwner)
-		router.POST("/config/get_det", v2.GetDetailConfig)
 
 		//天悦湾后台管理 帖子管理接口
 		router.POST("/park_posts/get", v2.GetParkPosts)
@@ -101,6 +101,8 @@ func InitRouter() {
 
 		//小程序登录注册
 		tyw_xcx_router.POST("/user/login", v2.TywUserLogin)
+		tyw_xcx_router.POST("/config/get_det", v2.GetDetailConfig)
+
 		//token校验 --  以下接口都需要校验token，如果不想校验，请写在上边
 		//用户模块
 		tyw_xcx_router.Use(tywMiddleware)
@@ -148,7 +150,6 @@ func InitRouter() {
 		tyw_xcx_router.POST("/config/get", v2.GetConfig)
 		tyw_xcx_router.POST("/config/edit", v2.EdiConfigState)
 		tyw_xcx_router.POST("/config/det", v2.DeleteConfig)
-		tyw_xcx_router.POST("/config/get_det", v2.GetDetailConfig)
 
 	}
 	xcx_router := r.Group("api/v2")

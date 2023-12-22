@@ -111,7 +111,7 @@ func TywCheckXcxUser(telephone string, password string) (code int, reUser TywUse
 // 查询所有帖子列表（postType可传，不传就是查询所有的帖子，postType=1是出租车位帖子，postType=2为求租帖子）
 func TywGetUserList(size, page int) ([]TywUser, int) {
 	var posts []TywUser
-	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
+	dbQuery := db.Order("updated_at asc").Limit(size).Offset(page * size)
 
 	err := dbQuery.Find(&posts).Error
 	if err != nil && err != gorm.ErrRecordNotFound {

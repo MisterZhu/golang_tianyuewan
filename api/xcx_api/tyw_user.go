@@ -40,7 +40,6 @@ func TywUserLogin(c *gin.Context) {
 	// 成功后获取openId
 	wxRes := model.WXLoginRes{}
 	json.NewDecoder(res.Body).Decode(&wxRes)
-	wxRes.OpenId = "oRQ4I42mhyGI76AdXvgbJdQlzo_I"
 	fmt.Printf("wxRes.OpenId:%s\n", wxRes.OpenId)
 	if len(wxRes.OpenId) <= 0 {
 		response.Fail(c, errmsg.GetErrMsg(errmsg.ERROR), nil)
