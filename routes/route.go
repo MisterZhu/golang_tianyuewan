@@ -102,6 +102,7 @@ func InitRouter() {
 		//小程序登录注册
 		tyw_xcx_router.POST("/user/login", v2.TywUserLogin)
 		tyw_xcx_router.POST("/config/get_det", v2.GetDetailConfig)
+		tyw_xcx_router.POST("/community/get", v2.GetCommunity)
 
 		//token校验 --  以下接口都需要校验token，如果不想校验，请写在上边
 		//用户模块
@@ -136,7 +137,6 @@ func InitRouter() {
 
 		//天悦湾后台管理 社区区管理接口
 		tyw_xcx_router.POST("/community/add", v2.AddCommunity)
-		tyw_xcx_router.POST("/community/get", v2.GetCommunity)
 		tyw_xcx_router.POST("/community/edit", v2.EdiCommunityState)
 		tyw_xcx_router.POST("/community/det", v2.DeleteCommunity)
 
