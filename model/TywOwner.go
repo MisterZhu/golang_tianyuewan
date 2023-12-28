@@ -30,7 +30,7 @@ func TywCreateOwner(data *TywOwnerModel) int {
 // 查询所有申请列表
 func TywGetOwners(size, page int, userID string) ([]TywOwnerModel, int) {
 	var posts []TywOwnerModel
-	dbQuery := db.Order("updated_at asc").Limit(size).Offset(page * size)
+	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
 
 	// 根据 userID 进行过滤
 	if userID != "" {
