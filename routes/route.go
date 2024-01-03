@@ -26,8 +26,8 @@ func InitRouter() {
 
 	router := r.Group("api/v1")
 	{
-		//用户模块路由接口
-		router.POST("/user/register", v1.Register)
+		//用户模块路由接口 屏蔽注册入口，请直接数据库添加
+		// router.POST("/user/register", v1.Register)
 		router.POST("/user/login", v1.Login)
 		router.POST("/config/get_det", v2.GetDetailConfig)
 
