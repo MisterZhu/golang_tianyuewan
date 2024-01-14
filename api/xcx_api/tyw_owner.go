@@ -73,11 +73,12 @@ func GetOwnerApply(c *gin.Context) {
 		formData.Size = 10
 	}
 
-	data, code := model.TywGetOwners(formData.Size, formData.Page, formData.UserId)
+	data, code, total := model.TywGetOwners(formData.Size, formData.Page, formData.UserId)
 	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"data": data,
-		"msg":  errmsg.GetErrMsg(code),
+		"code":     code,
+		"data":     data,
+		"totalNum": total,
+		"msg":      errmsg.GetErrMsg(code),
 	})
 	//response.Response(c, http.StatusOK, 200, errmsg.GetErrMsg(code), data)
 

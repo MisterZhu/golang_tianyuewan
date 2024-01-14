@@ -28,21 +28,28 @@ func TywCreateOwner(data *TywOwnerModel) int {
 }
 
 // 查询所有申请列表
-func TywGetOwners(size, page int, userID string) ([]TywOwnerModel, int) {
+func TywGetOwners(size, page int, userID string) ([]TywOwnerModel, int, int64) {
 	var posts []TywOwnerModel
+	var totalRecords int64
+
 	dbQuery := db.Order("created_at desc").Limit(size).Offset(page * size)
 
 	// 根据 userID 进行过滤
 	if userID != "" {
 		dbQuery = dbQuery.Where("user_id = ?", userID)
+		// 获取总条数（考虑 userID 筛选条件）
+		db.Model(&TywOwnerModel{}).Where("user_id = ?", userID).Count(&totalRecords)
+	} else {
+		// 获取总条数
+		db.Model(&TywOwnerModel{}).Count(&totalRecords)
 	}
 
 	err := dbQuery.Find(&posts).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, errmsg.ERROR
+		return nil, errmsg.ERROR, totalRecords
 	}
 
-	return posts, errmsg.SUCCSE
+	return posts, errmsg.SUCCSE, totalRecords
 }
 
 // todo 查询申请详情
